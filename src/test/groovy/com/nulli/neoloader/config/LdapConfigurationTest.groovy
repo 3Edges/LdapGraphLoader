@@ -33,4 +33,18 @@ class LdapConfigurationTest  extends Specification {
         fileName = "src/test/data/ldapServer.properties"
     }
 
+    // --------
+
+    def "test create Not Exists LDAP Config"() {
+
+        when:
+        def config = new LdapConfiguration (fileName)
+
+        then:
+        thrown(java.io.FileNotFoundException)
+
+        where:
+        fileName = "Dummy"
+    }
+
 }

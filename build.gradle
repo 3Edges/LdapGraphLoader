@@ -16,6 +16,13 @@ version = '0.0.1-SNAPSHOT'
 apply plugin: 'groovy'
 apply plugin: 'java'
 
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'NeoLoader libraries',
+                'Implementation-Version': version
+    }
+}
+
 // Dependencies versions
 def groovyVersion = "2.3.7"
 def neo4jVersion = "2.1.7"
@@ -27,7 +34,13 @@ repositories {
     maven { url "http://oss.sonatype.org/content/repositories/snapshots/" }
 }
 
+configurations {
+    ivy
+}
+
 dependencies {
+
+    ivy "org.apache.ivy:ivy:2.3.0"
 
     // COMPILE
     // Groovy libs
@@ -42,4 +55,8 @@ dependencies {
     // TEST
     testCompile group: 'junit', name: 'junit', version: '4.11'
     testCompile 'org.spockframework:spock-core:0.7-groovy-2.0'
+}
+
+tasks.withType(GroovyCompile) {
+    groovyClasspath += configurations.ivy
 }
