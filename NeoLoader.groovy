@@ -1,8 +1,3 @@
-import com.nulli.analyzer.neoloader.config.LdapConfiguration;
-
-@Grab(group='com.unboundid', module='unboundid-ldapsdk', version='2.3.8')
-import com.unboundid.ldap.sdk.*;
-
 /**
  * Groovy CLI script that creates a Neo4j Graph representation of an LDAP Source.
  * The resulting Graph contains 2 types of nodes:
@@ -21,9 +16,14 @@ import com.unboundid.ldap.sdk.*;
  *  =======
  *  groovy -cp path/to/GraphAnalyzer.jar NeoLoader.groovy
  *
- * Nulli Secundux Inc. - March 2015
+ * Nulli Secundus Inc. - March 2015
  * Created by ababeanu on 15-03-10.
  */
+
+import com.nulli.analyzer.neoloader.config.LdapConfiguration;
+
+@Grab(group='com.unboundid', module='unboundid-ldapsdk', version='2.3.8')
+import com.unboundid.ldap.sdk.*;
 
 // Command Line Builder
 def cli = new CliBuilder(usage:'NeoLoader.groovy [-l <ldap Config File>] [-n <neo4j config file>] [-h]', width:80 );
