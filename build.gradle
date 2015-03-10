@@ -1,0 +1,45 @@
+/**
+ * LDAP GRAPH ANALYZER
+ *
+ * A Utility that reads LDAP User Accounts and Group hierarchies directly from a given LDAP Directory
+ * and creates corresponding nodes and relationships in a Neo4J Graph Database.
+ *
+ * Nulli Secundus Inc - March 2015
+ * Created by ababeanu on 15-03-09.
+ *
+ */
+
+
+version = '0.0.1-SNAPSHOT'
+
+// Apply the groovy plugin to add support for Groovy
+apply plugin: 'groovy'
+apply plugin: 'java'
+
+// Dependencies versions
+def groovyVersion = "2.3.7"
+def neo4jVersion = "2.1.7"
+def unboundIDVersion = "2.3.8"
+def commonsCliVersion = "1.1"
+
+repositories {
+    mavenCentral()
+    maven { url "http://oss.sonatype.org/content/repositories/snapshots/" }
+}
+
+dependencies {
+
+    // COMPILE
+    // Groovy libs
+    compile 'org.codehaus.groovy:groovy-all:' + groovyVersion
+    // UnboundID LDAP SDK
+    compile 'com.unboundid:unboundid-ldapsdk:' + unboundIDVersion
+    // Neo4J Java SDK
+    compile 'org.neo4j:neo4j:' + neo4jVersion
+    // Command Line Builder
+    compile 'commons-cli:commons-cli:' + commonsCliVersion
+
+    // TEST
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+    testCompile 'org.spockframework:spock-core:0.7-groovy-2.0'
+}
