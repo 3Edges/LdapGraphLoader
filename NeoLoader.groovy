@@ -14,7 +14,9 @@
  *
  *  To run:
  *  =======
- *  groovy -cp path/to/GraphAnalyzer.jar:runtime/* NeoLoader.groovy
+ *  groovy -cp <path/to>/GraphAnalyzer.jar:runtime/* NeoLoader.groovy
+ *  e.g.,
+ *  groovy -cp build/libs/GraphAnalyzer-0.0.1-SNAPSHOT.jar:runtime/* NeoLoader.groovy
  *
  * Nulli Secundus Inc. - March 2015
  * Created by ababeanu on 15-03-10.
@@ -25,7 +27,7 @@ import com.nulli.analyzer.neoloader.LoaderProcessor
 import com.nulli.analyzer.neoloader.config.LdapConfiguration;
 
 @Grapes(
-    @Grab(group='com.unboundid', module='unboundid-ldapsdk', version='2.3.8')
+    @Grab(group='com.unboundid', module='unboundid-ldapsdk', version='3.0.0')
 )
 import com.unboundid.ldap.sdk.*;
 
