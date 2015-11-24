@@ -11,12 +11,13 @@ package com.nulli.analyzer.neoloader.config
  */
 class LdapConfiguration {
     private String LdapHost;
-    private String LdapPort;
+    private int LdapPort;
     private String BindDN;
     private String Password;
     private String BaseDN;
     private String UserObjClass;
     private String GroupObjClass;
+    private String MemberAttribute;
     private int NbConnections;
     private int PageSize;
 
@@ -29,6 +30,7 @@ class LdapConfiguration {
     private final String BASEDN_PROP = "basedn";
     private final String USER_OBJCLASS_PROP = "userobjclass";
     private final String GROUP_OBJCLASS_PROP = "groupobjclass";
+    private final String GROUP_MEMBER_ATTRIB = "memberattribute";
     private final String NB_CONNECTIONS_PROP = "nbconnections";
     private final String PAGE_SIZE_PROP = "pagesize";
 
@@ -57,7 +59,7 @@ class LdapConfiguration {
         return LdapHost
     }
 
-    String getLdapPort() {
+    int getLdapPort() {
         return LdapPort
     }
 
@@ -85,7 +87,16 @@ class LdapConfiguration {
         return NbConnections
     }
 
+    String getMemberAttribute() {
+        return MemberAttribute
+    }
+
+    void setMemberAttribute(String memberAttribute) {
+        MemberAttribute = memberAttribute
+    }
+
     int getPageSize() {
+
         return PageSize
     }
 
@@ -104,6 +115,7 @@ class LdapConfiguration {
         this.BaseDN = cfg.getProperty(BASEDN_PROP);
         this.UserObjClass = cfg.getProperty(USER_OBJCLASS_PROP);
         this.GroupObjClass = cfg.getProperty(GROUP_OBJCLASS_PROP);
+        this.MemberAttribute = cfg.get(GROUP_MEMBER_ATTRIB);
         this.NbConnections = cfg.getProperty(NB_CONNECTIONS_PROP);
         this.PageSize = cfg.getProperty(PAGE_SIZE_PROP);
     }

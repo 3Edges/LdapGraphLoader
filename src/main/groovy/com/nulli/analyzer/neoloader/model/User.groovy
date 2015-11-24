@@ -2,6 +2,7 @@ package com.nulli.analyzer.neoloader.model
 
 /**
  * Encapsulates a User instance and all relevant attributes.
+ * NOTE: only a subset of attributes are relevant to the Graph DB
  *
  * @Version 0.1
  *

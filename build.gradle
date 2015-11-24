@@ -29,6 +29,8 @@ def groovyVersion = "2.3.7"
 def neo4jVersion = "2.1.7"
 def unboundIDVersion = "2.3.8"
 def commonsCliVersion = "1.1"
+def ivyVersion = "2.3.0"
+def httpBuilderVersion = "0.7.1"
 
 repositories {
     mavenCentral()
@@ -42,7 +44,8 @@ configurations {
 
 dependencies {
 
-    ivy "org.apache.ivy:ivy:2.3.0"
+    // ivy "org.apache.ivy:ivy:2.3.0"
+    compile 'org.apache.ivy:ivy:' + ivyVersion
 
     // COMPILE
     // Groovy libs
@@ -53,6 +56,12 @@ dependencies {
     compile 'org.neo4j:neo4j:' + neo4jVersion
     // Command Line Builder
     compile 'commons-cli:commons-cli:' + commonsCliVersion
+    // REST support
+    compile 'org.codehaus.groovy.modules.http-builder:http-builder:' + httpBuilderVersion
+
+    // RUNTIME
+    runtime 'com.unboundid:unboundid-ldapsdk:' + unboundIDVersion
+    runtime 'org.codehaus.groovy.modules.http-builder:http-builder:' + httpBuilderVersion
 
     // TEST
     testCompile group: 'junit', name: 'junit', version: '4.11'
@@ -61,4 +70,9 @@ dependencies {
 
 tasks.withType(GroovyCompile) {
     groovyClasspath += configurations.ivy
+}
+
+task getDeps(type: Copy) {
+    from sourceSets.main.runtimeClasspath
+    into 'runtime/'
 }

@@ -13,6 +13,7 @@ class Group {
     private String GroupName;
     private String DN;
     private String Uuid;
+    private String [] Members;
 
     /**
      * Constructor.
@@ -48,4 +49,11 @@ class Group {
         Uuid = uuid
     }
 
+    String[] getMembers() {
+        return Members
+    }
+
+    void setMembers(String[] members) {
+        Members = members
+    }
 }

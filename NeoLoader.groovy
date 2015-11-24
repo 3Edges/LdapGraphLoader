@@ -14,15 +14,19 @@
  *
  *  To run:
  *  =======
- *  groovy -cp path/to/GraphAnalyzer.jar NeoLoader.groovy
+ *  groovy -cp path/to/GraphAnalyzer.jar:runtime/* NeoLoader.groovy
  *
  * Nulli Secundus Inc. - March 2015
  * Created by ababeanu on 15-03-10.
  */
 
+
+import com.nulli.analyzer.neoloader.LoaderProcessor
 import com.nulli.analyzer.neoloader.config.LdapConfiguration;
 
-@Grab(group='com.unboundid', module='unboundid-ldapsdk', version='2.3.8')
+@Grapes(
+    @Grab(group='com.unboundid', module='unboundid-ldapsdk', version='2.3.8')
+)
 import com.unboundid.ldap.sdk.*;
 
 // Command Line Builder
@@ -65,4 +69,9 @@ if ( options.l ) {
     }
     System.out.println 'Using default LDAP Config ...';
 }
+
+// Trigger Loader Processor
+// TODO
+def Loader = new LoaderProcessor(LdapCfg);
+Loader.processUsers();
 

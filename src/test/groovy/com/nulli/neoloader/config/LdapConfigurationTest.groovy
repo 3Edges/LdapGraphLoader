@@ -24,7 +24,7 @@ class LdapConfigurationTest  extends Specification {
 
         then:
         host == 'example.com'
-        port == '389'
+        port == 389
         dn == "cn=Directory Manager"
         pwd == "Password01"
         basedn == "ou=people,dc=example,dc=com"
