@@ -9,12 +9,12 @@ package com.nulli.analyzer.neoloader.model
  * Nulli Secundus Inc. - March 2015
  * Created by ababeanu on 15-03-10.
  */
-class User {
+class User implements Entity {
 
     // User Attributes
-    private String Uid;
-    private String DN;
-    private String Uuid;
+    private String dn
+    private final String entityType = "Person"
+    private Map attributes
 
     /**
      * Constructor.
@@ -26,27 +26,23 @@ class User {
 
     // ACCESSORS
 
-    String getUid() {
-        return Uid
+    String getEntityType () {
+        return entityType
     }
 
-    void setUid(String uid) {
-        Uid = uid
+    String getDn() {
+        return dn
     }
 
-    String getDN() {
-        return DN
+    void setDn(String DN) {
+        this.dn = DN
     }
 
-    void setDN(String DN) {
-        this.DN = DN
+    Map getAttributes() {
+        return attributes
     }
 
-    String getUuid() {
-        return Uuid
-    }
-
-    void setUuid(String uuid) {
-        Uuid = uuid
+    void setAttributes(Map attribs) {
+        attributes = attribs
     }
 }

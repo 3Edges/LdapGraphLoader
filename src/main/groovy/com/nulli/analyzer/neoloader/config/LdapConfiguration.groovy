@@ -22,7 +22,7 @@ class LdapConfiguration {
     private int PageSize;
 
     // CONSTANTS
-    private static final String DEFAULT_CFG_FILE_NAME = "ldapServer.properties";
+    private static final String DEFAULT_CFG_FILE_NAME = "resources/ldapServer.properties";
     private final String HOST_PROP = "host";
     private final String PORT_PROP = "port";
     private final String BINDDN_PROP = "binddn";
