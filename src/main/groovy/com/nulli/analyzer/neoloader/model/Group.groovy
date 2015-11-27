@@ -8,12 +8,12 @@ package com.nulli.analyzer.neoloader.model
  * Nulli Secundus Inc. - March 2015
  * Created by ababeanu on 15-03-10.
  */
-class Group {
+class Group implements Entity {
     // User Attributes
-    private String GroupName;
-    private String DN;
-    private String Uuid;
-    private String [] Members;
+    private final String entityType = "Group"
+    private String dn
+    private Map attributes
+    private String[] members
 
     /**
      * Constructor.
@@ -25,35 +25,33 @@ class Group {
 
     // ACCESSORS
 
-    String getGroupName() {
-        return Uid
+    String getEntityType () {
+        return entityType
     }
 
-    void setGroupName(String uid) {
-        Uid = uid
+    String getDn() {
+        return dn
     }
 
-    String getDN() {
-        return DN
+    void setDn(String DN) {
+        this.dn = DN
     }
 
-    void setDN(String DN) {
-        this.DN = DN
+    Map getAttributes() {
+        return attributes
     }
 
-    String getUuid() {
-        return Uuid
+    void setAttributes(Map attribs) {
+        attributes = attribs
     }
 
-    void setUuid(String uuid) {
-        Uuid = uuid
-    }
+    // Specific to the Group entity:
 
     String[] getMembers() {
-        return Members
+        return members
     }
 
     void setMembers(String[] members) {
-        Members = members
+        this.members = members
     }
 }

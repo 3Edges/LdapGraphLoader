@@ -1,0 +1,11 @@
+{
+  "Person" : {
+    "username" : "uid",
+    "email" : "mail",
+    "name" : "cn"
+
+  },
+  "Group" : {
+    "name" : "cn"
+  }
+}
