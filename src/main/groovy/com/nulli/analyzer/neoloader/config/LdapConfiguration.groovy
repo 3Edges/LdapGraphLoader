@@ -9,12 +9,14 @@ package com.nulli.analyzer.neoloader.config
  * Nulli Secundus Inc. - March 2015
  * Created by ababeanu on 15-03-09.
  */
-class LdapConfiguration {
+class LdapConfiguration implements LoaderConfig {
     private String LdapHost;
     private int LdapPort;
     private String BindDN;
     private String Password;
     private String BaseDN;
+    private String UserBaseDN;
+    private String GroupBaseDN;
     private String UserObjClass;
     private String GroupObjClass;
     private String MemberAttribute;
@@ -28,6 +30,8 @@ class LdapConfiguration {
     private final String BINDDN_PROP = "binddn";
     private final String PASSWORD_PROP = "password";
     private final String BASEDN_PROP = "basedn";
+    private final String USER_BASEDN_PROP = "userBasedn";
+    private final String GROUP_BASEDN_PROP = "groupBasedn";
     private final String USER_OBJCLASS_PROP = "userobjclass";
     private final String GROUP_OBJCLASS_PROP = "groupobjclass";
     private final String GROUP_MEMBER_ATTRIB = "memberattribute";
@@ -100,19 +104,34 @@ class LdapConfiguration {
         return PageSize
     }
 
-// PRIVATE METHODS
+    String getUserBaseDN() {
+        return UserBaseDN
+    }
 
-    /**
+    void setUserBaseDN(String userBaseDN) {
+        UserBaseDN = userBaseDN
+    }
+
+    String getGroupBaseDN() {
+        return GroupBaseDN
+    }
+
+    void setGroupBaseDN(String groupBaseDN) {
+        GroupBaseDN = groupBaseDN
+    }
+/**
      * Loads a given Configuration
      *
      * @param FName A ConfigSlurper ConfigObject, encapsulating the LDAP Properties to Load.
      */
-    private void loadCfg (ConfigObject cfg) {
+    void loadCfg (ConfigObject cfg) {
         this.LdapHost = cfg.getProperty(HOST_PROP);
         this.LdapPort = cfg.getProperty(PORT_PROP);
         this.BindDN = cfg.getProperty(BINDDN_PROP);
         this.Password = cfg.getProperty(PASSWORD_PROP);
         this.BaseDN = cfg.getProperty(BASEDN_PROP);
+        this.UserBaseDN = cfg.getProperty(USER_BASEDN_PROP);
+        this.GroupBaseDN = cfg.getProperty(GROUP_BASEDN_PROP);
         this.UserObjClass = cfg.getProperty(USER_OBJCLASS_PROP);
         this.GroupObjClass = cfg.getProperty(GROUP_OBJCLASS_PROP);
         this.MemberAttribute = cfg.get(GROUP_MEMBER_ATTRIB);

@@ -96,5 +96,5 @@ if ( options.n ) {
 // Trigger Loader Processor
 // TODO
 def Loader = new LoaderProcessor(LdapCfg, NeoCfg);
-Loader.processUsers();
+Loader.orchestrateLoad();
 

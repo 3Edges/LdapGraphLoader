@@ -1,5 +1,7 @@
 package com.nulli.analyzer.neoloader.model
 
+import com.nulli.analyzer.neoloader.connector.ConnectorEntities
+
 /**
  * Encapsulates a Group instance and all relevant attributes.
  *
@@ -10,10 +12,11 @@ package com.nulli.analyzer.neoloader.model
  */
 class Group implements Entity {
     // User Attributes
-    private final String entityType = "Group"
+    private final String entityType = ConnectorEntities.Group
     private String dn
     private Map attributes
     private String[] members
+    private String parentDN
 
     /**
      * Constructor.
@@ -43,6 +46,14 @@ class Group implements Entity {
 
     void setAttributes(Map attribs) {
         attributes = attribs
+    }
+
+    void setParent (String pDN) {
+        parentDN = pDN
+    }
+
+    String getParent () {
+        return parentDN
     }
 
     // Specific to the Group entity:

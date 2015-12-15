@@ -2,25 +2,14 @@ package com.nulli.analyzer.neoloader
 
 import com.nulli.analyzer.neoloader.config.LdapConfiguration
 import com.nulli.analyzer.neoloader.config.NeoConfiguration
-import com.nulli.analyzer.neoloader.ldap.ConnectionPool
-import com.nulli.analyzer.neoloader.model.User
+import com.nulli.analyzer.neoloader.connector.ConnectorEntities
+import com.nulli.analyzer.neoloader.connector.ldap.LdapFacade
+import com.nulli.analyzer.neoloader.model.Person
+import com.nulli.analyzer.neoloader.model.Group
 import com.nulli.analyzer.neoloader.neo4j.NeoInstance
-import com.unboundid.ldap.sdk.Entry
 import com.unboundid.ldap.sdk.LDAPException
-import com.unboundid.ldap.sdk.SearchResult
-import com.unboundid.ldap.sdk.SearchResultEntry
-import com.unboundid.ldap.sdk.SearchScope
-import com.unboundid.ldap.sdk.SearchRequest;
-import com.unboundid.ldap.sdk.Filter;
-import com.unboundid.ldap.sdk.LDAPConnectionPool;
-import com.unboundid.ldap.sdk.LDAPSearchException;
-import com.unboundid.ldap.sdk.Attribute;
-
-import com.unboundid.ldap.sdk.controls.SimplePagedResultsControl;
-import com.unboundid.asn1.ASN1OctetString;
-import com.unboundid.util.LDAPTestUtils
+import com.unboundid.ldap.sdk.LDAPSearchException
 import groovy.util.logging.Log
-import org.codehaus.groovy.runtime.StackTraceUtils;
 
 /**
  * Orchestrates the Loading of the LDAP Entries to Neo4j.
@@ -34,9 +23,10 @@ import org.codehaus.groovy.runtime.StackTraceUtils;
 class LoaderProcessor {
 
     private LdapConfiguration config;
-    private LDAPConnectionPool pool;
     private NeoInstance neoServer;
-
+    private LdapFacade ldap;
+    private HashMap<String,String> EntityDN2ID;
+    
     /**
      * Constructor.
      * Instantiates a new Processor with the given Configuration. Creates a Connection Pool
@@ -47,108 +37,79 @@ class LoaderProcessor {
      */
     LoaderProcessor (LdapConfiguration cfg, NeoConfiguration neoCfg) throws LDAPException {
         this.config = cfg;
-        this.pool = new ConnectionPool(cfg).getPool();
         this.neoServer = new NeoInstance(neoCfg)
+        this.ldap = new LdapFacade(cfg)
     }
 
     /**
-     * Searches LDAP for User Accounts and creates corresponding Vertices in the Graph DB
-     * TODO: make separate method to build Search Filters for each mapped Entity.
-     *
-     * @param searchDn A String: the LDAP Search Base to search users from.
+     * Orchestrates the Neo4J loads: triggers LDAP reads and Neo Writes for all supported Entities.
      */
-    public processUsers () throws LDAPSearchException {
+    void  orchestrateLoad () {
+        // 1st load users
+        processUsers()
+
+        // Then load groups
+        // Start by 1st level Groups
+        processGroups()
+
+    }
+
+    /**
+     * Searches LDAP for User Accounts and creates corresponding Vertices in the Graph D
+     * TODO: Exception handling: catch LDAPSearchException
+     */
+    private processUsers () throws LDAPSearchException {
 
         log.info "processUsers - Entering."
 
-        // Init
-        int numSearches = 0;
-        int totalEntriesReturned = 0;
-        String searchDn = config.getBaseDN();
+        // Search users
+        def ArrayList<Person> users = this.ldap.search(ConnectorEntities.Person)
 
-
-        // Perform a search to retrieve all users in the server, but only retrieving
-        // the configured PageSize at a time.
-
-        // Search Filter for USERS
-        // TODO: Refactor LDAP Search as a separate method. Consider connector.
-        log.info "processUsers -- Processing Users ..."
-        System.out.println ("Processing LDAP Users...")
-        SearchRequest searchRequest = new SearchRequest(searchDn,
-                SearchScope.SUB, Filter.createEqualityFilter("objectClass", config.getUserObjClass()));
-
-        // Pagination Cookie - keeps track of where the Search is at
-        ASN1OctetString resumeCookie = null;
-        while (true)
-        {
-            searchRequest.setControls(
-                    new SimplePagedResultsControl(config.getPageSize(), resumeCookie));
-
-            // Perform LDAP Search
-            SearchResult searchResult;
-            try {
-                searchResult = this.pool.search(searchRequest);
-            } catch (LDAPSearchException e) {
-                log.severe "Failed to search LDAP with the configured filter."
-                log.severe  StackTraceUtils.sanitize(e).toString()
-            }
-
-            // Count Results
-            numSearches++;
-            totalEntriesReturned += searchResult.getEntryCount();
-            log.info "processUsers - Found ${totalEntriesReturned} LDAP Entries in Paged Search Nb ${numSearches}."
-
-            log.info "processUsers - Creating Neo4J Nodes..."
-            for (SearchResultEntry e : searchResult.getSearchEntries())
-            {
-                // Create Neo nodes for each found entry
-                log.fine "processUsers - Found Entry = ${e.getDN()} . "
-//                System.out.println ("Found DN = " + e.getDN());
-//                System.out.println ("-- " + e.getAttribute("uid").getName() +" = " + e.getAttribute("uid").getValue());
-                // result.getDN(), "uid: " + result.getAttribute("uid").getValue()
-
-                // Instantiating User Entiry object
-                User u = new User()
-                u.setDn(e.getDN())
-
-                def attribs = [:]
-                def attrIt = e.getAttributes().iterator()
-                while (attrIt.hasNext()) {
-                    Attribute a = (Attribute) attrIt.next()
-                    attribs.put(a.getName(), a.getValues())
-                }
-                u.setAttributes(attribs)
-                log.fine "processUsers -- Calling Neo Create..."
-
-                // Create Node
-                if (neoServer.createNode(u)) {
-                    log.info "processUsers - Sucessfully created Neo Node for user ${e.getDN()}"
-                } else {
-                    log.severe "processUsers - Failed to create Neo Node for user ${e.getDN()} !"
-                    System.out.println("processUsers - Failed to create Neo Node for user: " + e.getDN())
-                }
-            }
-
-            // Get results control to determine if there are more rows on the server.
-            // Asserts whether the result is paginated
-            LDAPTestUtils.assertHasControl(searchResult, SimplePagedResultsControl.PAGED_RESULTS_OID);
-            // Gets the results control
-            SimplePagedResultsControl responseControl = SimplePagedResultsControl.get(searchResult);
-            // Check if more are expected
-            if (responseControl.moreResultsToReturn())
-            {
-                // The resume cookie can be included in the simple paged results
-                // control included in the next search to get the next page of results.
-                resumeCookie = responseControl.getCookie();
-            }
-            else
-            {
-                break;
+        // Process users: Create Neo4J Nodes
+        log.fine "processUsers -- Calling Neo Create..."
+        for (Person u : users) {
+            // Create Node
+            if (neoServer.createNode(u)) {
+                log.fine "processUsers - Sucessfully created Neo Node for user ${u.getDn()}"
+            } else {
+                log.severe "processUsers - Failed to create Neo Node for user ${u.getDn()} !"
+                System.out.println("processUsers - Failed to create Neo Node for user: " + u.getDn())
             }
         }
 
-        log.info "processUsers - User processing complete. Processed ${totalEntriesReturned} Users."
-        System.out.println ("processUsers - User processing complete. Processed Users." + String.valueOf(totalEntriesReturned))
+        log.info "processUsers - User processing complete. Processed ${String.valueOf(users.size())} Users."
+        System.out.println ("processUsers - User processing complete. Processed Users." + String.valueOf(users.size()))
 
     }
+
+    /**
+     * Searches LDAP for User Groups and creates corresponding Vertices in the Graph, as well as Relationships
+     * from the group to all User members or Group parent
+     *
+     * @param searchDn A String: the LDAP Search Base to search Groups from.
+     */
+    private processGroups () throws LDAPSearchException {
+
+        log.info "processGroups - Entering."
+
+        // Search Groups
+        def ArrayList<Group> groups = this.ldap.search(ConnectorEntities.Group)
+
+        // Process Group: Create Neo4J Nodes
+        log.fine "processGroups -- Calling Neo Create..."
+        for (Group g : groups) {
+            // Create Node
+            if (neoServer.createNode(g)) {
+                log.fine "processGroups - Sucessfully created Neo Node for group ${g.getDn()}"
+            } else {
+                log.severe "processGroups - Failed to create Neo Node for group ${g.getDn()} !"
+                System.out.println("processGroups - Failed to create Neo Node for group: " + g.getDn())
+            }
+        }
+
+        log.info "processGroups - User processing complete. Processed ${String.valueOf(groups.size())} groups."
+        System.out.println ("processGroups - User processing complete. Processed Groups." + String.valueOf(groups.size()))
+
+    }
+
 }

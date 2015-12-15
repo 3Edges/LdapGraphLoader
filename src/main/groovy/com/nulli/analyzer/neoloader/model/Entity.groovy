@@ -43,4 +43,12 @@ interface Entity {
      * mapping file.
      */
     void setAttributes (Map attribs)
+
+    /**
+     * Stores the DN of the parent entity of the current
+     * @param parentDN
+     */
+    void setParent (String parentDN)
+
+    String getParent ()
 }

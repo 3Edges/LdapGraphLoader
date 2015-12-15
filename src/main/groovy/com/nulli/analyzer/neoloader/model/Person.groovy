@@ -1,5 +1,7 @@
 package com.nulli.analyzer.neoloader.model
 
+import com.nulli.analyzer.neoloader.connector.ConnectorEntities
+
 /**
  * Encapsulates a User instance and all relevant attributes.
  * NOTE: only a subset of attributes are relevant to the Graph DB
@@ -9,18 +11,19 @@ package com.nulli.analyzer.neoloader.model
  * Nulli Secundus Inc. - March 2015
  * Created by ababeanu on 15-03-10.
  */
-class User implements Entity {
+class Person implements Entity {
 
     // User Attributes
     private String dn
-    private final String entityType = "Person"
+    private final String entityType = ConnectorEntities.Person
     private Map attributes
+    private String parentDN
 
     /**
      * Constructor.
      * Empty, User is a Bean.
      */
-    User () {
+    Person() {
 
     }
 
@@ -44,5 +47,13 @@ class User implements Entity {
 
     void setAttributes(Map attribs) {
         attributes = attribs
+    }
+
+    void setParent (String pDN) {
+        parentDN = pDN
+    }
+
+    String getParent () {
+        return parentDN
     }
 }

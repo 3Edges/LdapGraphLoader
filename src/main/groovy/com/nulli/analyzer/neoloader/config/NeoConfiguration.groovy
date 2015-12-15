@@ -10,7 +10,7 @@ package com.nulli.analyzer.neoloader.config
  * Nulli Secundus Inc. - November 2015
  * Created by ababeanu on 15-11-24.
  */
-class NeoConfiguration {
+class NeoConfiguration implements LoaderConfig{
     private String Host;
     private int NeoPort;
     private String User;
@@ -77,14 +77,12 @@ class NeoConfiguration {
         return authorization
     }
 
-    // PRIVATE METHODS
-
     /**
      * Loads a given Configuration
      *
      * @param FName A ConfigSlurper ConfigObject, encapsulating the LDAP Properties to Load.
      */
-    private void loadCfg (ConfigObject cfg) {
+     void loadCfg (ConfigObject cfg) {
         this.Host = cfg.getProperty(HOST_PROP);
         this.NeoPort = cfg.getProperty(PORT_PROP);
         this.User = cfg.getProperty(USER_PROP);
