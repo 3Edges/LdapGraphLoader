@@ -4,6 +4,7 @@ import com.nulli.analyzer.neoloader.config.NeoConfiguration
 import com.nulli.analyzer.neoloader.config.PropertyMap
 import com.nulli.analyzer.neoloader.model.Entity
 import groovy.util.logging.Log
+import java.util.logging.Level
 import groovyx.net.http.HttpResponseDecorator
 import groovyx.net.http.RESTClient
 import groovyx.net.http.ContentType
@@ -23,7 +24,6 @@ class NeoInstance {
 
     private NeoConfiguration config;
     private String restBaseURL;
-    private Map mappings;
 
     /**
      * Constructor.
@@ -34,22 +34,6 @@ class NeoInstance {
     NeoInstance (NeoConfiguration cfg) {
         this.config = cfg
         this.restBaseURL = "http://" + cfg.getHost() + ":" + cfg.getNeoPort()
-        // Use default LDAP to Neo attribute mappings
-        this.mappings = new PropertyMap().getPropMappings()
-    }
-
-    /**
-     * Constructor.
-     * Instantiates a new NeoInstance object from the given config
-     *
-     * @param cfg the NeoConfiguration to use for Graph DB
-     * @param maps a Map representation of JSON LDAP to Neo Property mappings
-     */
-    NeoInstance (NeoConfiguration cfg, Map maps) {
-        this.config = cfg
-        this.restBaseURL = "http://" + cfg.getHost() + ":" + cfg.getNeoPort() + "/db/data"
-        // Use supplied LDAP to Neo attribute mappings
-        this.mappings = maps
     }
 
     /**
@@ -124,44 +108,24 @@ class NeoInstance {
         // Initializations
         def jsonProps = "{ "
         def attributes = ent.getAttributes()
-        /* DEBUG: *
+        /* DEBUG: */
         for (String k: attributes.keySet()) {
             log.info "BuildJsonProps - Attrib key: ${k}, val = ${attributes.get(k)}"
         }
         /* */
 
-        // Get the Attributes to Property mappings for the current Entity
         def entTp = ent.getEntityType()
         log.info "BuildJsonProps - Processing ${entTp}. "
-        /* DEBUG:
-        for (String k: mappings.keySet()) {
-            log.info "BuildJsonProps - mapping key: ${k}"
-        }
-        */
-        def entMappings = (Map) mappings.get(entTp);
-        /* DEBUG: *
-        for (String k: entMappings.keySet()) {
-            log.info "BuildJsonProps - Mapping Key: ${k}, val = ${entMappings.get(k)}"
-        }
-        /* */
 
-        // Loop through attributes and build properties JSON: Nb of attributes
-        def nbMappings = entMappings.size()
+        // Loop through attributes and build properties JSON
+        def nbAttrs = attributes.size()
         def cnt = 0
 
         // Process Attributes
-        entMappings.each {name, value ->
+        attributes.each {name, value ->
             cnt++
-            if (value == "dn") {
-                // Special case for DN: it's not an array
-                String dn = attributes.get(value)
-                jsonProps += name + ":'" + dn + "'"
-            } else {
-                // We only take the 1st value of Mutli-Valued LDAP Attributes
-                String[] attrAry = attributes.get(value)
-                jsonProps += name + ":'" + attrAry[0] + "'"
-            }
-            if (cnt < nbMappings)
+            jsonProps += (name == "dn") ? name + ":'" + value + "'" : name + ":'" + value[0] + "'"
+            if (cnt < nbAttrs)
                 jsonProps += ","
         }
 

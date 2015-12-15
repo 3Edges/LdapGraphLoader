@@ -48,7 +48,7 @@ class LdapFacade implements ConnectorFacade {
      * @param EntityType A ConnectorEntities value representing the type of entity to search for.
      * @return An ArrayList of Entity objects.
      */
-    ArrayList<Entity> search (ConnectorEntities EntityType) {
+    ArrayList<Entity> search (ConnectorEntities EntityType, Collection SearchAttribs) {
 
         log.info "LDAP Search - Entering."
 
@@ -58,7 +58,7 @@ class LdapFacade implements ConnectorFacade {
         ArrayList<Entity> Results = new ArrayList<Entity> ()
 
         // Build Search filter.
-        SearchRequest searchRequest = buildSearchFilter (EntityType);
+        SearchRequest searchRequest = buildSearchFilter (EntityType, buildSearchAttrs(SearchAttribs));
 
         log.info "Ldap Search -- Processing ${EntityType}s..."
         System.out.println ("Processing LDAP ${EntityType}s...")
@@ -124,22 +124,22 @@ class LdapFacade implements ConnectorFacade {
     //---------------
     // Create LDAP Search Filter
     //---------------
-    private SearchRequest buildSearchFilter (ConnectorEntities et) {
+    private SearchRequest buildSearchFilter (ConnectorEntities et, String[] searchAttrs) {
 
         switch (et) {
             case ConnectorEntities.Person:
                 return new SearchRequest(config.getUserBaseDN(),
-                        SearchScope.SUB, Filter.createEqualityFilter("objectClass", config.getUserObjClass()))
+                        SearchScope.SUB, Filter.createEqualityFilter("objectClass", config.getUserObjClass()), searchAttrs)
 
             case ConnectorEntities.Group:
                 return new SearchRequest(config.getGroupBaseDN(),
-                        SearchScope.SUB, Filter.createEqualityFilter("objectClass", config.getGroupObjClass()))
+                        SearchScope.SUB, Filter.createEqualityFilter("objectClass", config.getGroupObjClass()), searchAttrs)
         }
     }
 
     //---------------
     // Create Entity
-    //---------------
+    //---------------searchAttrssearchAttrssearchAttrssearchAttrs
     private Entity createEntity (ConnectorEntities et, SearchResultEntry e) {
         switch (et) {
             case ConnectorEntities.Person:
@@ -222,6 +222,16 @@ class LdapFacade implements ConnectorFacade {
         return ((parent == config.getBaseDN()) ||
                 (parent == config.getGroupBaseDN()) ||
                 (parent == config.getUserBaseDN())) ? "" : parent
+    }
+
+    //---------------------
+    // Build a String[] to be used as Search Attributes
+    //---------------------
+    private String[] buildSearchAttrs (Collection attrs) {
+        String[] attribs = attrs.toArray(new String[attrs.size()]);
+
+        return attribs;
+
     }
 
 }

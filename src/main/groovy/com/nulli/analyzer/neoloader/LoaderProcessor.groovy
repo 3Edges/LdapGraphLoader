@@ -2,6 +2,7 @@ package com.nulli.analyzer.neoloader
 
 import com.nulli.analyzer.neoloader.config.LdapConfiguration
 import com.nulli.analyzer.neoloader.config.NeoConfiguration
+import com.nulli.analyzer.neoloader.config.PropertyMap
 import com.nulli.analyzer.neoloader.connector.ConnectorEntities
 import com.nulli.analyzer.neoloader.connector.ldap.LdapFacade
 import com.nulli.analyzer.neoloader.model.Person
@@ -25,6 +26,7 @@ class LoaderProcessor {
     private LdapConfiguration config;
     private NeoInstance neoServer;
     private LdapFacade ldap;
+    private Map mappings;
     private HashMap<String,String> EntityDN2ID;
     
     /**
@@ -39,12 +41,14 @@ class LoaderProcessor {
         this.config = cfg;
         this.neoServer = new NeoInstance(neoCfg)
         this.ldap = new LdapFacade(cfg)
+        this.mappings = new PropertyMap().getPropMappings()
     }
 
     /**
      * Orchestrates the Neo4J loads: triggers LDAP reads and Neo Writes for all supported Entities.
      */
     void  orchestrateLoad () {
+
         // 1st load users
         processUsers()
 
@@ -62,8 +66,11 @@ class LoaderProcessor {
 
         log.info "processUsers - Entering."
 
+        // Determine search attributes based on mappings
+        def entMappings = (Map) mappings.get(ConnectorEntities.Person.name());
+
         // Search users
-        def ArrayList<Person> users = this.ldap.search(ConnectorEntities.Person)
+        def ArrayList<Person> users = this.ldap.search(ConnectorEntities.Person, entMappings.values())
 
         // Process users: Create Neo4J Nodes
         log.fine "processUsers -- Calling Neo Create..."
@@ -92,8 +99,11 @@ class LoaderProcessor {
 
         log.info "processGroups - Entering."
 
+        // Determine search attributes based on mappings
+        def entMappings = (Map) mappings.get(ConnectorEntities.Group.name());
+
         // Search Groups
-        def ArrayList<Group> groups = this.ldap.search(ConnectorEntities.Group)
+        def ArrayList<Group> groups = this.ldap.search(ConnectorEntities.Group, entMappings.values())
 
         // Process Group: Create Neo4J Nodes
         log.fine "processGroups -- Calling Neo Create..."
