@@ -34,9 +34,9 @@ The utility is built as a *Gradle* project using the *Groovy* language. It there
 
 ### Installation
 
-1. Download the source
-2. From the source dir: `gradle build --refresh-dependencies`
-3. Update the configuration files to match your environment (location: the `resources` subdir)
+1. Download the source.
+2. Update the configuration files to match your environment (location: the `resources` subdir). See below for configuration details...
+3. From the source dir: `gradle build --refresh-dependencies` .
 4. To Run: `neoLoader.sh` - Or on Windows boxes: 
 `groovy -cp build/libs/GraphAnalyzer-0.0.1-SNAPSHOT.jar:runtime/* -Djava.util.logging.config.file=resources/logging.properties NeoLoader.groovy`
 
@@ -78,6 +78,16 @@ A JSON file that provides LDAP Attribute to Neo4J Node Property mappings for eac
 
 ### About Performance
 
+The Graph Loader is designed with performance in mind, at the cost of RAM. It performs the minimal I/O operations on both source and target sides. To achieve this, the Loader buffers *all* read LDAP entries in memory. 
+
+The amount of memory required depends on the number of attributes mapped (the fewer the smaller the amount of required RAM), the size of the mapped attribute values and the number of Entries to load. Several GB of RAm may be required for millions of LDAP entries.
+
+Since the Neo4J server is expected to be remote, the Loader can't use the Neo4J Java SDK, which only supports (as of Dec. 2015) embedded Neo instances. The loader therefore has to issue as many REST create calls as there are nodes and relationships to create (see also section 'Next Steps' below).
+
+Benchmarking baseline:
+Using the provided sample:
+
+_2002_ Users, _205_ Groups and _2774_ Relationships created in about *35s* on a Mac powerbook with 16GB RAM...
 
 ### Who do I talk to? ###
 
