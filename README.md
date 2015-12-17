@@ -101,7 +101,9 @@ Possible future enhancements:
 
 * Support for Organization Entity hierarchies
 * Support for LDIF Source files
-* Determine better/faster ways to create nodes and relationships in Neo4J
+* Support SSL connections
+* Determine if multi-threading can help performance
+* Determine better/faster ways to create nodes and relationships in Neo4J. In particular: batch loads.
 * REST API server to trigger all actions through REST.
 * A Web UI for integration in the Cloud.
 
