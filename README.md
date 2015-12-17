@@ -41,7 +41,7 @@ The utility is built as a *Gradle* project using the *Groovy* language. It there
 
 ### Installation
 
-1. Download the source (use the *`develop`* branch !).
+1. Download the source (use the **`develop`** branch !).
 2. Update the configuration files to match your environment (location: the `resources` subdir). See below for configuration details...
 3. From the source dir: `gradle build --refresh-dependencies` .
 4. To Run: `neoLoader.sh` - Or on Windows boxes: 
