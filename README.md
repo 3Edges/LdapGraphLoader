@@ -31,7 +31,7 @@ Currently at *version 1* (December 2015), the Graph Analyzer has the following f
 * Supports USERS and GROUP hierarchies.
 * Uses Java Logging to log its operation.
 
-A sample LDIF files is provided, with 2000 users and 200 groups. The group memberships are random.
+A sample LDIF files is provided, with 2000 users and 200 groups (file: `data/NeoLDAPSample.ldif`). The group memberships are random.
 
 ### Requirements
 The utility is built as a *Gradle* project using the *Groovy* language. It therefore requires:
