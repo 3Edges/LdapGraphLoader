@@ -38,8 +38,23 @@ The utility is built as a *Gradle* project using the *Groovy* language. It there
 4. To Run: `neoLoader.sh` - Or on Windows boxes: 
 `groovy -cp build/libs/GraphAnalyzer-0.0.1-SNAPSHOT.jar:runtime/* -Djava.util.logging.config.file=resources/logging.properties NeoLoader.groovy`
 
-### Contribution guidelines ###
+### Configuration
 
+The Graph Loader uses the following config files...
+
+#### ldapServer.properties
+
+Gathers all the connectivity and metadata of the source LDAP Directory. In particular:
+* `host` : LDAP Server Host
+* `port` : LDAP Server Port
+* `binddn' : LDAP Admin User DN
+* `password` : LDAP User password
+* `userBasedn` : The DN of the container under which the User Accounts are stored. The Loader will _NOT_ create a node for this container (on flat DIT, it may contain millions of user accounts, which would imply too many relationships in the graph for a single node).
+* `groupBaseDn` : The DN of the container under which the Groups are stored. The Loader will _NOT_ create a node for this container.
+* `userobjclass` : The LDAP Objectclass of the User Accounts. Used for searching.
+* `groupobjclass` : The LDAP Objectclass of the Groups. Used for searching.
+
+#### 
 * Writing tests
 * Code review
 * Other guidelines
