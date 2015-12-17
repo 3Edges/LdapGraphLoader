@@ -16,7 +16,8 @@ interface ConnectorFacade {
      * TODO: Consider using OpenICF to support LDIF, CSV and other loads.
      *
      * @param EntityType A ConnectorEntities value representing the type of entity to search for.
+     * @param SearchAttribs A Collection that contains all the attributes to be Searched for and returned.
      * @return An ArrayList of Entity objects.
      */
-    ArrayList<Entity> search (ConnectorEntities EntityType)
+    ArrayList<Entity> search (ConnectorEntities EntityType, Collection SearchAttribs)
 }

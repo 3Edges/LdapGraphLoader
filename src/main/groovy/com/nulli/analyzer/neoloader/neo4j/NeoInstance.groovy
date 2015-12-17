@@ -2,12 +2,13 @@ package com.nulli.analyzer.neoloader.neo4j
 
 import com.nulli.analyzer.neoloader.config.NeoConfiguration
 import com.nulli.analyzer.neoloader.config.PropertyMap
+import com.nulli.analyzer.neoloader.connector.ConnectorEntities
 import com.nulli.analyzer.neoloader.model.Entity
 import groovy.util.logging.Log
-import groovyx.net.http.HttpResponseDecorator
 import groovyx.net.http.RESTClient
 import groovyx.net.http.ContentType
 import groovyx.net.http.HttpResponseDecorator
+import groovy.json.JsonSlurper
 
 /**
  *
@@ -21,35 +22,21 @@ import groovyx.net.http.HttpResponseDecorator
 @Log
 class NeoInstance {
 
-    private NeoConfiguration config;
-    private String restBaseURL;
-    private Map mappings;
+    private NeoConfiguration config
+    private String restBaseURL
+    private Map mappings
 
     /**
      * Constructor.
      * Instantiates a new NeoInstance object from the given config
      *
      * @param cfg the NeoConfiguration to use for Graph DB
+     * @param attrMap A Map of attribute mappings between LDAP and Neo
      */
-    NeoInstance (NeoConfiguration cfg) {
+    NeoInstance (NeoConfiguration cfg, Map attrMap) {
         this.config = cfg
         this.restBaseURL = "http://" + cfg.getHost() + ":" + cfg.getNeoPort()
-        // Use default LDAP to Neo attribute mappings
-        this.mappings = new PropertyMap().getPropMappings()
-    }
-
-    /**
-     * Constructor.
-     * Instantiates a new NeoInstance object from the given config
-     *
-     * @param cfg the NeoConfiguration to use for Graph DB
-     * @param maps a Map representation of JSON LDAP to Neo Property mappings
-     */
-    NeoInstance (NeoConfiguration cfg, Map maps) {
-        this.config = cfg
-        this.restBaseURL = "http://" + cfg.getHost() + ":" + cfg.getNeoPort() + "/db/data"
-        // Use supplied LDAP to Neo attribute mappings
-        this.mappings = maps
+        this.mappings = attrMap
     }
 
     /**
@@ -60,11 +47,11 @@ class NeoInstance {
      * already.
      *
      * @param entity A NeoLoader Entity:  instance of an LDAP Entity
-     * @return TRUE if the creation succeeded, FALSE otherwise
+     * @return A String: the ID of the newly created node, or "" if the creation failed
      */
-    boolean createNode (Entity entity) {
+    String createNode (Entity entity) {
 
-        def success = false
+        def id = ""
 
         log.fine "------------ createNode - Entering. "
 
@@ -81,9 +68,9 @@ class NeoInstance {
                 body : '{"statements" : [ { "statement": ' + crCypher + '} ]}'
         )
 
-        if (resp.getStatus() == 200) {
-            log.fine ("createNode - New node succesfully created.")
-            success = true
+        if (resp.getStatus() < 400) {
+            id = extractNodeID((String) resp.getData())
+            log.fine ("createNode - New node ${id} succesfully created.")
         } else {
             log.severe ("createNode - New node creation failure : " + String.valueOf(resp.status))
             System.out.println ("createNode - New node creation failure : " + String.valueOf(resp.status))
@@ -91,23 +78,56 @@ class NeoInstance {
 
         log.fine "------------ createNode - Exiting. "
 
-        return success
+        return id
     }
 
     /**
      * Creates a Neo4J Relationship between the 2 given Entities,
      * identified by their DN. The relationship is assigned the given properties.
      *
-     * @param entity1
-     * @param entity2
+     * @param Id1 a String representing the Neo4j ID of the node that is the origin of the relationship
+     * @param Id2 a String representing the Neo4j ID of the node that is the target of the relationship
+     * @param RelType A String: the type of the relationship. Becomes the Neo4J Label of the relationship.
      * @param props A Map of Key=Value properties to assign to the new relationship
      * @return
      */
-    boolean createRelationship (Entity entity1, Entity entity2, Map props) {
+    boolean createRelationship (String Id1, String Id2, String RelType, Map props) {
 
-        // TODO
+        log.fine "------------ createRelationship : ${Id1} -> ${Id2} : Entering..."
 
-        return true;
+        // Inits
+        boolean success = false
+        // Target Node URL
+        def target = restBaseURL + '/db/data/node/' + Id2
+        // REST request Body:
+        def body = '{"to" : "' + target + '",' + ' "type" : ' + '"' + RelType + '"'
+        if ((props) && (props.size() > 0)) {
+            // If rel. properties are supplied, add them to the body
+            body += ', ' + buildRelJsonProps(props)
+        }
+        body += ' }'
+
+        // Create Relationship through REST
+        def client = new RESTClient( restBaseURL  )
+        client.auth.basic config.getUser(), config.getPassword()
+        def resp = (HttpResponseDecorator) client.post(
+                path : '/db/data/node/' + Id1 + '/relationships',
+                requestContentType : ContentType.JSON,
+                headers: ["Accept": "application/json; charset=UTF-8","Authorization": config.getAuthorization()],
+                body : body
+        )
+
+        if (resp.getStatus() < 400) {
+            log.fine ("createRelationship - New relationship succesfully created.")
+            success = true
+        } else {
+            log.severe ("createRelationship - New Rel. creation failure : " + String.valueOf(resp.status))
+            System.out.println ("createRelationship - New Rel. creation failure : " + String.valueOf(resp.status))
+        }
+
+        log.fine "------------ createRelationship - Exiting. "
+
+        return success;
     }
 
     /**
@@ -119,7 +139,7 @@ class NeoInstance {
      */
     String buildJsonProps (Entity ent) {
 
-        log.info "BuildJsonProps - Entering. "
+        log.fine "BuildJsonProps - Entering. "
 
         // Initializations
         def jsonProps = "{ "
@@ -130,46 +150,89 @@ class NeoInstance {
         }
         /* */
 
-        // Get the Attributes to Property mappings for the current Entity
         def entTp = ent.getEntityType()
-        log.info "BuildJsonProps - Processing ${entTp}. "
-        /* DEBUG:
-        for (String k: mappings.keySet()) {
-            log.info "BuildJsonProps - mapping key: ${k}"
-        }
-        */
-        def entMappings = (Map) mappings.get(entTp);
-        /* DEBUG: *
-        for (String k: entMappings.keySet()) {
-            log.info "BuildJsonProps - Mapping Key: ${k}, val = ${entMappings.get(k)}"
-        }
-        /* */
+        log.fine "BuildJsonProps - Processing ${entTp}. "
 
-        // Loop through attributes and build properties JSON: Nb of attributes
-        def nbMappings = entMappings.size()
+        // Inits
+        def entMappings = (Map) mappings.get(entTp); // Get mappings for current entity
+        def nbAttrs = attributes.size()
         def cnt = 0
 
         // Process Attributes
-        entMappings.each {name, value ->
+        attributes.each {name, value ->
             cnt++
-            if (value == "dn") {
-                // Special case for DN: it's not an array
-                String dn = attributes.get(value)
-                jsonProps += name + ":'" + dn + "'"
-            } else {
-                // We only take the 1st value of Mutli-Valued LDAP Attributes
-                String[] attrAry = attributes.get(value)
-                jsonProps += name + ":'" + attrAry[0] + "'"
-            }
-            if (cnt < nbMappings)
+            def String val = value[0]
+            // Use the Mapped propertty names in Neo4J:
+            jsonProps += (name == "dn") ? entMappings.get(name) + ":'" + value + "'" : entMappings.get(name) + ":'" + val.replaceAll(/\'/, ' ') + "'"
+            if (cnt < nbAttrs)
                 jsonProps += ","
         }
 
         jsonProps += " }"
 
-        log.info "BuildJsonProps - JSON props = ${jsonProps} . "
+        log.fine "BuildJsonProps - JSON props = ${jsonProps} . "
 
         return jsonProps
+    }
+
+    /**
+     * Builds a JSON string of Neo4F Relationship Properties from a given Map.
+     * Example output:
+     "data" : {
+        "foo" : "bar"
+     }
+     *
+     * @param props A Map of Key=Value properties
+     * @return a JSON String
+     */
+    String buildRelJsonProps (Map props) {
+
+        log.fine "buildRelJsonProps - Entering. "
+
+        // Inits
+        def jsonRelProps = ''
+        def nbProps = props.size()
+
+        if (nbProps > 0) {
+            // There are properties to process
+            def cnt = 0
+            jsonRelProps += '"data" : { '
+            props.each { name, value ->
+                cnt++
+                jsonRelProps += '"' + name + '" : "' + value + '"'
+                if (cnt < nbProps)
+                    jsonRelProps += ","
+            }
+
+            jsonRelProps += ' }'
+        }
+
+        log.fine "buildRelJsonProps - JSON REL props = ${jsonRelProps} . "
+        return jsonRelProps
+    }
+
+    // PRIVATE
+
+    /**
+     * Extracts the ID from a Neo4J Node creation Rest request
+     * Sample Response:
+     *
+     {errors=[], results=[{columns=[id(n)], data=[{row=[8626]}]}]}
+     *
+     *
+     * @param Response The Response string from the Neo4J Server, pre-parsed
+     * @return the new Node iD
+     */
+    private String extractNodeID (String resp) {
+
+        log.fine "exctractNodeID - Response = ${resp}"
+
+        def str = resp.substring(resp.indexOf("row") + 5)
+        def id = str.substring(0,str.indexOf("]"))
+
+        log.fine "exctractNodeID - ID = ${id}"
+
+        return id
     }
 
 
