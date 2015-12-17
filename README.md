@@ -26,6 +26,7 @@ Currently at *version 1* (December 2015), the Graph Analyzer has the following f
 
 ### Requirements
 The utility is built as a *Gradle* project using the *Groovy* language. It therefore requires:
+
 * The [Groovy](http://www.groovy-lang.org/download.html) language. On Mac: `brew install groovy`.
 * [Gradle](http://gradle.org/gradle-download/). On Mac: `brew install gradle`.
 
