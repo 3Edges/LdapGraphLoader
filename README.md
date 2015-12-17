@@ -42,9 +42,10 @@ The utility is built as a *Gradle* project using the *Groovy* language. It there
 
 The Graph Loader uses the following config files...
 
-#### ldapServer.properties
+##### ldapServer.properties
 
 Gathers all the connectivity and metadata of the source LDAP Directory. In particular:
+
 * `host` : LDAP Server Host
 * `port` : LDAP Server Port
 * `binddn' : LDAP Admin User DN
