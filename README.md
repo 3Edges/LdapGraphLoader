@@ -19,10 +19,12 @@ Finally (v 3.0), the Analyzer could apply the suggested optimizations directly t
 Currently at *version 1* (December 2015), the Graph Analyzer has the following features:
 
 * Uses the [UnboundID SDK](https://www.ldap.com/unboundid-ldap-sdk-for-java) to perform _paginated_ LDAP Searches on any LDAP Directory source.
-* Uses LDAP attribute to Neo4J Property mappings to filter and transform LDAP Attributes
+* Uses the UnboundID LDAP connection pool.
+* Uses LDAP attribute to Neo4J Property mappings to filter and transform LDAP Attributes.
 * Uses the Neo4J REST APIs for all Graph I/O operations. The assumption is that the Neo4J server could be anywhere (including the cloud), and thus not embedded.
-* All Processing is done in memory with I/O operations kept to a minimum
+* All Processing is done in memory with I/O operations kept to a minimum.
 * Supports USERS and GROUP hierarchies.
+* Uses Java Logging to log its operation.
 
 ### Requirements
 The utility is built as a *Gradle* project using the *Groovy* language. It therefore requires:
@@ -58,10 +60,24 @@ Gathers all the connectivity and metadata of the source LDAP Directory. In parti
 * `nbconnections` : The number of connections to use in the LDAP Connections pool.
 * `pagesize` : The size of the LDAP search page to use while searching. For best results, this should be set to the LDAP Server search limit.
 
-#### 
-* Writing tests
-* Code review
-* Other guidelines
+###### logging.properties
+
+The Java Logging properties file. Used here mainly to set the log level for the utility. Just set the `.level` property. 
+
+###### NeoServer.properties
+
+Gathers all configuration information pertaining to the target Neo4J server. I.e.,
+
+* `host` : The Neo4J Host
+* `port` : The Neo4J port
+* `authorization`: The Base64-encoded basic HTTP authentication credentials for the Neo4J User, used in REST calls to Neo4J. The encoded string is in the form: `<user>:<password>`
+
+###### propertyMaps.json
+
+A JSON file that provides LDAP Attribute to Neo4J Node Property mappings for each Entity supported by the Loader. The Entities can be either of Group or Person. Mappings are provided for each: LDAP Attributes (left) are mapped to Neo4J property names (right). The Loader will only fetch the LDAP attributes mapped here.
+
+### About Performance
+
 
 ### Who do I talk to? ###
 
