@@ -42,18 +42,21 @@ The utility is built as a *Gradle* project using the *Groovy* language. It there
 
 The Graph Loader uses the following config files...
 
-##### ldapServer.properties
+###### ldapServer.properties
 
 Gathers all the connectivity and metadata of the source LDAP Directory. In particular:
 
 * `host` : LDAP Server Host
 * `port` : LDAP Server Port
-* `binddn' : LDAP Admin User DN
+* `binddn` : LDAP Admin User DN
 * `password` : LDAP User password
 * `userBasedn` : The DN of the container under which the User Accounts are stored. The Loader will _NOT_ create a node for this container (on flat DIT, it may contain millions of user accounts, which would imply too many relationships in the graph for a single node).
 * `groupBaseDn` : The DN of the container under which the Groups are stored. The Loader will _NOT_ create a node for this container.
 * `userobjclass` : The LDAP Objectclass of the User Accounts. Used for searching.
 * `groupobjclass` : The LDAP Objectclass of the Groups. Used for searching.
+* `memberattribute` : The name of the Group multi-valued attribute that stores group members. The Member values are expected to be User Account DNs.
+* `nbconnections` : The number of connections to use in the LDAP Connections pool.
+* `pagesize` : The size of the LDAP search page to use while searching. For best results, this should be set to the LDAP Server search limit.
 
 #### 
 * Writing tests
