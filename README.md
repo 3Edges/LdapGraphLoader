@@ -20,6 +20,7 @@ Currently at *version 1* (December 2015), the Graph Analyzer has the following f
 
 * Uses the [UnboundID SDK](https://www.ldap.com/unboundid-ldap-sdk-for-java) to perform _paginated_ LDAP Searches on any LDAP Directory source.
 * Uses the UnboundID LDAP connection pool.
+* Uses a custom lightweight extendable Connector framework, to accommodate more diverse data sources in the future.
 * Uses LDAP attribute to Neo4J Property mappings to filter and transform LDAP Attributes.
 * Uses the Neo4J REST APIs for all Graph I/O operations. The assumption is that the Neo4J server could be anywhere (including the cloud), and thus not embedded.
 * All Processing is done in memory with I/O operations kept to a minimum.
@@ -82,14 +83,33 @@ The Graph Loader is designed with performance in mind, at the cost of RAM. It pe
 
 The amount of memory required depends on the number of attributes mapped (the fewer the smaller the amount of required RAM), the size of the mapped attribute values and the number of Entries to load. Several GB of RAm may be required for millions of LDAP entries.
 
-Since the Neo4J server is expected to be remote, the Loader can't use the Neo4J Java SDK, which only supports (as of Dec. 2015) embedded Neo instances. The loader therefore has to issue as many REST create calls as there are nodes and relationships to create (see also section 'Next Steps' below).
+Since the Neo4J server is expected to be remote, the Loader can't use the Neo4J Java SDK, which only supports (as of Dec. 2015) embedded Neo instances. The loader therefore has to issue as many REST create calls as there are nodes and relationships to create (see also section 'Next Steps' below). The Neo4J I/Os are the bottleneck here.
 
-Benchmarking baseline:
-Using the provided sample:
+Benchmarking baseline, using the provided LDIF sample:
 
-_2002_ Users, _205_ Groups and _2774_ Relationships created in about *35s* on a Mac powerbook with 16GB RAM...
+_2002_ Users, _205_ Groups and _2774_ Relationships created in about **35s** on a Mac powerbook with 16GB RAM...
+
+### Next Steps
+
+Possible future enhancements:
+
+* Support for Organization Entity hierarchies
+* Support for LDIF Source files
+* Determine better/faster ways to create nodes and relationships in Neo4J
+* REST API server to trigger all actions through REST.
+* A Web UI for integration in the Cloud.
+
+For v 2.0:
+
+* Devise and write CYPHER queries to optimize the graph (and hence the source LDAP directory)
+* Orchestrate optimization/analysis of the graph and produce reports.
+
+For v 3.0:
+
+* Modify the Source LDAP Directory based on the optimization reports.
+
 
 ### Who do I talk to? ###
 
 * Repo owner or admin
-* Other community or team contact
+* [alex@nulli.com](mailto:alex@nulli.com)
