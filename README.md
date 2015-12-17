@@ -8,6 +8,10 @@ The Graph Loader and Analyzer tool creates a Neo4J Graph database from data read
 * `MEMBER_OF` : user group membership
 * `PART_OF` : Group hierarchy, relates a child to parent Group relationship
 
+Sample resulting Graph:
+
+![Screen Shot 2015-12-17 at 11.57.49 AM.png](https://bitbucket.org/repo/B8n8nj/images/1484419031-Screen%20Shot%202015-12-17%20at%2011.57.49%20AM.png)
+
 The idea is to then :
 
 1. use the graph to optimize and simplify the LDAP Directory, through the use of relevant CYPHER queries (V 2.0). The optimizations could then be reported and acted upon.
@@ -26,6 +30,8 @@ Currently at *version 1* (December 2015), the Graph Analyzer has the following f
 * All Processing is done in memory with I/O operations kept to a minimum.
 * Supports USERS and GROUP hierarchies.
 * Uses Java Logging to log its operation.
+
+A sample LDIF files is provided, with 2000 users and 200 groups. The group memberships are random.
 
 ### Requirements
 The utility is built as a *Gradle* project using the *Groovy* language. It therefore requires:
