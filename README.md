@@ -100,7 +100,7 @@ _2002_ Users, _205_ Groups and _2774_ Relationships created in about **35s** on 
 Possible future enhancements:
 
 * Support for Organization Entity hierarchies
-* Add a MaxMemory config parameter to limit the amount of RAM used by the tool
+* Add a _MaxMemory_ config parameter to limit the amount of RAM used by the tool
 * Support for LDIF Source files
 * Support SSL connections
 * Determine if multi-threading can help performance
