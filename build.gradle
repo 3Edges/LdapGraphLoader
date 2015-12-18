@@ -10,7 +10,7 @@
  */
 
 
-version = '0.0.1-SNAPSHOT'
+version = '1.0'
 
 // Apply the groovy plugin to add support for Groovy
 apply plugin: 'groovy'
