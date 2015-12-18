@@ -23,14 +23,28 @@ class LdapConfigurationTest  extends Specification {
         def basedn = config.getBaseDN()
 
         then:
-        host == 'example.com'
-        port == '389'
+        host == 'forgerock1.nullidemo.com'
+        port == 1389
         dn == "cn=Directory Manager"
-        pwd == "Password01"
-        basedn == "ou=people,dc=example,dc=com"
+        pwd == "test1234"
+        basedn == "dc=nulli,dc=com"
 
         where:
         fileName = "src/test/data/ldapServer.properties"
+    }
+
+    // --------
+
+    def "test create Not Exists LDAP Config"() {
+
+        when:
+        def config = new LdapConfiguration (fileName)
+
+        then:
+        thrown(java.io.FileNotFoundException)
+
+        where:
+        fileName = "Dummy"
     }
 
 }

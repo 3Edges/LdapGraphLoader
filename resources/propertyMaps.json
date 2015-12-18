@@ -1,0 +1,13 @@
+{
+  "Person" : {
+    "dn" : "ldapDN",
+    "uid" : "username",
+    "mail" : "email",
+    "cn" : "name"
+
+  },
+  "Group" : {
+    "dn" : "ldapDN",
+    "cn" : "name"
+  }
+}
