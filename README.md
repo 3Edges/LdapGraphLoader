@@ -19,6 +19,8 @@ The idea is to then :
 
 Finally (v 3.0), the Analyzer could apply the suggested optimizations directly to the LDAP directory.
 
+Note that the Loader can also be just used as such: an LDAP to Graph loader tool.
+
 ### Features
 Currently at *version 1* (December 2015), the Graph Analyzer has the following features:
 
