@@ -1,4 +1,4 @@
-# Graph/LDAP Analyzer #
+# LDAP to graph Loader and Analyzer #
 
 Graph Loader, aka Graph Analyzer v 1.0
 
@@ -10,7 +10,7 @@ The Graph Loader and Analyzer tool creates a Neo4J Graph database from data read
 
 Sample resulting Graph:
 
-![Screen Shot 2015-12-17 at 11.57.49 AM.png](https://bitbucket.org/repo/B8n8nj/images/1484419031-Screen%20Shot%202015-12-17%20at%2011.57.49%20AM.png)
+![Sample Graph image](SampleGraph.png)
 
 The idea is to then :
 
