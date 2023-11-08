@@ -13,6 +13,7 @@ package com.nulli.analyzer.neoloader.config
 class NeoConfiguration implements LoaderConfig{
     private String Host;
     private int NeoPort;
+    private String Database;
     private String User;
     private String Password;
     private String authorization;
@@ -23,6 +24,7 @@ class NeoConfiguration implements LoaderConfig{
     private static final String DEFAULT_CFG_FILE_NAME = "resources/neoServer.properties";
     private final String HOST_PROP = "host";
     private final String PORT_PROP = "port";
+    private final String DATABASE_PROP = "database";
     private final String USER_PROP = "user";
     private final String PWD_PROP = "password";
     private final String AUTHORIZATION = "authorization";
@@ -77,6 +79,11 @@ class NeoConfiguration implements LoaderConfig{
         return authorization
     }
 
+    String getDatabase() {
+        return Database
+    }
+
+
     /**
      * Loads a given Configuration
      *
@@ -85,6 +92,7 @@ class NeoConfiguration implements LoaderConfig{
      void loadCfg (ConfigObject cfg) {
         this.Host = cfg.getProperty(HOST_PROP);
         this.NeoPort = cfg.getProperty(PORT_PROP);
+        this.Database = cfg.getProperty(DATABASE_PROP);
         this.User = cfg.getProperty(USER_PROP);
         this.Password = cfg.getProperty(PWD_PROP);
         this.authorization = cfg.getProperty(AUTHORIZATION);
