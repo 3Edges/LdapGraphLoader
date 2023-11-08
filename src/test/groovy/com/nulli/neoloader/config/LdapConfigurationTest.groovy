@@ -6,8 +6,8 @@ import com.nulli.analyzer.neoloader.config.LdapConfiguration;
 /**
  * Spock tests for the LDAP Configuration
  *
- * Nulli Secundus Inc - March 2015
- * Created by ababeanu on 15-03-09.
+ * 3Edges - March 2015
+ * Created by ababeanu on 2015-03-09.
  */
 class LdapConfigurationTest  extends Specification {
 

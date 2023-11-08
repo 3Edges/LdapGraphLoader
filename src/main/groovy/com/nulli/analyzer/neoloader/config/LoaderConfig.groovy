@@ -3,7 +3,7 @@ package com.nulli.analyzer.neoloader.config
 /**
  * Represents a DataSource or Neo target configuration object, which encapsulates all data necessary to perform a connection.
  *
- * Created by ababeanu on 2015-11-27.
+ * Created by ababeanu on 2015-11-27 - 3Edges.
  */
 interface LoaderConfig {
 

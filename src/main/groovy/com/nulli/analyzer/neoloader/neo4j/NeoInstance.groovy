@@ -16,7 +16,7 @@ import groovy.json.JsonSlurper
  * Provifde an interface to Neo4J, it uses Neo4J's REST API
  * interact with the Graph Database.
  *
- * Nulli Secundus Inc. - November 2015
+ * 3Edges - November 2015
  * Created by ababeanu on 2015-11-23.
  */
 @Log

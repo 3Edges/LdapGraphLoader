@@ -18,8 +18,8 @@ import groovy.util.logging.Log
  * - Reads Users and Groups from LDAP
  * - Created corresponding vertices and edges in the graph.
  *
- * Nulli Secundus Inc. - March 2015
- * Created by ababeanu on 15-03-11.
+ * 3Edges - March 2015
+ * Created by ababeanu on 2015-03-11.
  */
 @Log
 class LoaderProcessor {

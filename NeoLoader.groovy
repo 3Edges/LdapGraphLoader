@@ -18,8 +18,8 @@
  *  e.g.,
  *  groovy -Djava.util.logging.config.file=resources/logging.properties  -cp build/libs/GraphAnalyzer-0.0.1-SNAPSHOT.jar:runtime/* NeoLoader.groovy
  *
- * Nulli Secundus Inc. - March 2015
- * Created by ababeanu on 15-03-10.
+ * 3Edges - March 2015
+ * Created by ababeanu on 2015-03-10.
  */
 
 

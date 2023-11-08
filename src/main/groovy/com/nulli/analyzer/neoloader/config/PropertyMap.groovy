@@ -7,8 +7,8 @@ import groovy.json.JsonSlurper
  *
  * @Version 0.1
  *
- * Nulli Secundus Inc. - November 2015
- * Created by ababeanu on 15-11-24.
+ * 3Edges - November 2015
+ * Created by ababeanu on 2015-11-24.
  */
 class PropertyMap {
 

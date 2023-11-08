@@ -12,8 +12,8 @@ import org.codehaus.groovy.runtime.StackTraceUtils;
 /**
  * Creates an LDAP Connection pool to the LDAP server which configuration is supplied through the constructor.
  *
- * Nulli Secundus Inc. - March 2015
- * Created by ababeanu on 15-03-10.
+ * 3Edges - March 2015
+ * Created by ababeanu on 2015-03-10.
  */
 @Log
 class ConnectionPool {

@@ -4,7 +4,7 @@ package com.nulli.analyzer.neoloader.model
  * Encapsulates an instance of an Entity.
  * An entity is an LDAP entry that can be modeled as a node in Neo4J.
  *
- * Created by ababeanu on 2015-11-24.
+ * Created by ababeanu on 2015-11-24 - 3Edges.
  */
 interface Entity {
 
