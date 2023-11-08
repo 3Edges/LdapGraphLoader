@@ -4,7 +4,7 @@ import com.nulli.analyzer.neoloader.model.Entity
 /**
  * Interfaces with source systems or components. Contains source data to copy to Neo4J
  *
- * Created by ababeanu on 2015-11-30.
+ * Created by ababeanu on 2015-11-30 - 3Edges.
  */
 interface ConnectorFacade {
 

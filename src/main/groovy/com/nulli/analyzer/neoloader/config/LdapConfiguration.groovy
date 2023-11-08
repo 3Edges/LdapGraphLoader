@@ -6,8 +6,8 @@ package com.nulli.analyzer.neoloader.config
  *
  * @Version 0.1
  *
- * Nulli Secundus Inc. - March 2015
- * Created by ababeanu on 15-03-09.
+ * 3Edges. - March 2015
+ * Created by ababeanu on 2015-03-09.
  */
 class LdapConfiguration implements LoaderConfig {
     private String LdapHost;

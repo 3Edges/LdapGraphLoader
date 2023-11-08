@@ -16,7 +16,7 @@ import groovy.json.JsonSlurper
  * Provifde an interface to Neo4J, it uses Neo4J's REST API
  * interact with the Graph Database.
  *
- * Nulli Secundus Inc. - November 2015
+ * 3Edges - November 2015
  * Created by ababeanu on 2015-11-23.
  */
 @Log
@@ -35,7 +35,7 @@ class NeoInstance {
      */
     NeoInstance (NeoConfiguration cfg, Map attrMap) {
         this.config = cfg
-        this.restBaseURL = "http://" + cfg.getHost() + ":" + cfg.getNeoPort()
+        this.restBaseURL = "http://${cfg.getHost()}:${cfg.getNeoPort()}/db/${cfg.getDatabase()}"
         this.mappings = attrMap
     }
 
@@ -62,7 +62,7 @@ class NeoInstance {
         def client = new RESTClient( restBaseURL  )
         client.auth.basic config.getUser(), config.getPassword()
         def resp = (HttpResponseDecorator) client.post(
-                path : '/db/data/transaction/commit',
+                path : '/transaction/commit',
                 requestContentType : ContentType.JSON,
                 headers: ["Accept": "application/json; charset=UTF-8","Authorization": config.getAuthorization()],
                 body : '{"statements" : [ { "statement": ' + crCypher + '} ]}'
@@ -98,7 +98,7 @@ class NeoInstance {
         // Inits
         boolean success = false
         // Target Node URL
-        def target = restBaseURL + '/db/data/node/' + Id2
+        def target = restBaseURL + '/node/' + Id2
         // REST request Body:
         def body = '{"to" : "' + target + '",' + ' "type" : ' + '"' + RelType + '"'
         if ((props) && (props.size() > 0)) {
@@ -111,7 +111,7 @@ class NeoInstance {
         def client = new RESTClient( restBaseURL  )
         client.auth.basic config.getUser(), config.getPassword()
         def resp = (HttpResponseDecorator) client.post(
-                path : '/db/data/node/' + Id1 + '/relationships',
+                path : '/node/' + Id1 + '/relationships',
                 requestContentType : ContentType.JSON,
                 headers: ["Accept": "application/json; charset=UTF-8","Authorization": config.getAuthorization()],
                 body : body

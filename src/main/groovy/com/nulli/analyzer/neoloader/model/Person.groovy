@@ -8,8 +8,8 @@ import com.nulli.analyzer.neoloader.connector.ConnectorEntities
  *
  * @Version 0.1
  *
- * Nulli Secundus Inc. - March 2015
- * Created by ababeanu on 15-03-10.
+ * 3Edges - March 2015
+ * Created by ababeanu on 2015-03-10.
  */
 class Person implements Entity {
 

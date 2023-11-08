@@ -24,7 +24,7 @@ import groovy.util.logging.Log
 /**
  * Interfaces with a given LDAP directory, as defined in the supplied configuration.
  *
- * Created by ababeanu on 2015-11-30.
+ * Created by ababeanu on 2015-11-30 - 3Edges.
  */
 @Log
 class LdapFacade implements ConnectorFacade {

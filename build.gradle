@@ -10,31 +10,31 @@
  */
 
 
-version = '1.0'
+version = "1.0"
 
 // Apply the groovy plugin to add support for Groovy
-apply plugin: 'groovy'
-apply plugin: 'java'
+apply plugin: "groovy"
+apply plugin: "java"
 
 // Build GraphAnalyzer.jar
 jar {
     manifest {
-        attributes 'Implementation-Title': 'Graph Analyzer',
-                   'Implementation-Version': version
+        attributes "Implementation-Title": "Graph Analyzer",
+                   "Implementation-Version": version
     }
 }
 
 // Dependencies versions
-def groovyVersion = "2.3.7"
-def neo4jVersion = "2.3.1"
+def groovyVersion = "4.0.14"
+def neo4jVersion = "4.4.4"
 def unboundIDVersion = "3.0.0" //"2.3.8"
 def commonsCliVersion = "1.1"
-def ivyVersion = "2.3.0"
+def ivyVersion = "2.5.2"
 def httpBuilderVersion = "0.7.1"
 
 repositories {
     mavenCentral()
-    maven { url "http://oss.sonatype.org/content/repositories/snapshots/" }
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
 }
 
 // In order to use Grapes with Gradle
@@ -45,30 +45,30 @@ configurations {
 dependencies {
 
     // ivy "org.apache.ivy:ivy:2.3.0"
-    compile 'org.apache.ivy:ivy:' + ivyVersion
+    implementation "org.apache.ivy:ivy:${ivyVersion}"
 
-    // COMPILE
+    // implementation
     // Groovy libs
-    compile 'org.codehaus.groovy:groovy-all:' + groovyVersion
+    implementation "org.apache.groovy:groovy-all:${groovyVersion}"
     // UnboundID LDAP SDK
-    compile 'com.unboundid:unboundid-ldapsdk:' + unboundIDVersion
+    implementation "com.unboundid:unboundid-ldapsdk:${unboundIDVersion}"
     // Neo4J Java SDK
-    compile 'org.neo4j:neo4j:' + neo4jVersion
+    implementation "org.neo4j:neo4j:${neo4jVersion}"
     // Command Line Builder
-    compile 'commons-cli:commons-cli:' + commonsCliVersion
+    implementation "commons-cli:commons-cli:${commonsCliVersion}"
     // REST HTTP Client
-    compile 'org.codehaus.groovy.modules.http-builder:http-builder:' + httpBuilderVersion
+    implementation "org.codehaus.groovy.modules.http-builder:http-builder:${httpBuilderVersion}"
 
     // TEST
-    testCompile group: 'junit', name: 'junit', version: '4.11'
-    testCompile 'org.spockframework:spock-core:0.7-groovy-2.0'
+    testImplementation group: "junit", name: "junit", version: "4.13.2"
+    testImplementation "org.spockframework:spock-core:2.4-M1-groovy-4.0"
 }
 
-tasks.withType(GroovyCompile) {
+tasks.compileGroovy {
     groovyClasspath += configurations.ivy
 }
 
 task getDeps(type: Copy) {
     from sourceSets.main.runtimeClasspath
-    into 'runtime/'
+    into "runtime/"
 }
