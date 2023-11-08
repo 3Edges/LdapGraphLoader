@@ -1,12 +1,12 @@
-package com.nulli.analyzer.neoloader.connector.ldap
+package com.threeedges.analyzer.neoloader.connector.ldap
 
-import com.nulli.analyzer.neoloader.config.LdapConfiguration
-import com.nulli.analyzer.neoloader.connector.ConnectorEntities
-import com.nulli.analyzer.neoloader.connector.ConnectorFacade
-import com.nulli.analyzer.neoloader.ldap.ConnectionPool
-import com.nulli.analyzer.neoloader.model.Entity
-import com.nulli.analyzer.neoloader.model.Person
-import com.nulli.analyzer.neoloader.model.Group
+import com.threeedges.analyzer.neoloader.config.LdapConfiguration
+import com.threeedges.analyzer.neoloader.connector.ConnectorEntities
+import com.threeedges.analyzer.neoloader.connector.ConnectorFacade
+import com.threeedges.analyzer.neoloader.ldap.ConnectionPool
+import com.threeedges.analyzer.neoloader.model.Entity
+import com.threeedges.analyzer.neoloader.model.Person
+import com.threeedges.analyzer.neoloader.model.Group
 import com.unboundid.asn1.ASN1OctetString
 import com.unboundid.ldap.sdk.SearchResult
 import com.unboundid.ldap.sdk.SearchResultEntry

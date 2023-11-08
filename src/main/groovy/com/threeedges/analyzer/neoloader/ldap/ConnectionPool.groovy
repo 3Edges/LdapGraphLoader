@@ -1,6 +1,6 @@
-package com.nulli.analyzer.neoloader.ldap
+package com.threeedges.analyzer.neoloader.ldap
 
-import com.nulli.analyzer.neoloader.config.LdapConfiguration
+import com.threeedges.analyzer.neoloader.config.LdapConfiguration
 import com.unboundid.ldap.sdk.LDAPConnectionPool;
 import com.unboundid.ldap.sdk.LDAPConnection;
 import com.unboundid.ldap.sdk.BindResult

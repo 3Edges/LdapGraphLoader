@@ -1,4 +1,4 @@
-package com.nulli.analyzer.neoloader.config
+package com.threeedges.analyzer.neoloader.config
 
 import groovy.json.JsonSlurper
 

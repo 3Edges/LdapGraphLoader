@@ -1,4 +1,4 @@
-package com.nulli.analyzer.neoloader.neo4j
+package com.threeedges.analyzer.neoloader.neo4j
 
 /**
  * Lost of Neo Relationship Types

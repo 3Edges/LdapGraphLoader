@@ -1,4 +1,4 @@
-package com.nulli.analyzer.neoloader.model
+package com.threeedges.analyzer.neoloader.model
 
 /**
  * Encapsulates an instance of an Entity.

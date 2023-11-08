@@ -1,28 +1,29 @@
-package com.nulli.analyzer.neoloader.model
+package com.threeedges.analyzer.neoloader.model
 
-import com.nulli.analyzer.neoloader.connector.ConnectorEntities
+import com.threeedges.analyzer.neoloader.connector.ConnectorEntities
 
 /**
- * Encapsulates a Group instance and all relevant attributes.
+ * Encapsulates a User instance and all relevant attributes.
+ * NOTE: only a subset of attributes are relevant to the Graph DB
  *
  * @Version 0.1
  *
  * 3Edges - March 2015
  * Created by ababeanu on 2015-03-10.
  */
-class Group implements Entity {
+class Person implements Entity {
+
     // User Attributes
-    private final String entityType = ConnectorEntities.Group
     private String dn
+    private final String entityType = ConnectorEntities.Person
     private Map attributes
-    private String[] members
     private String parentDN
 
     /**
      * Constructor.
      * Empty, User is a Bean.
      */
-    Group () {
+    Person() {
 
     }
 
@@ -54,15 +55,5 @@ class Group implements Entity {
 
     String getParent () {
         return parentDN
-    }
-
-    // Specific to the Group entity:
-
-    String[] getMembers() {
-        return members
-    }
-
-    void setMembers(String[] members) {
-        this.members = members
     }
 }

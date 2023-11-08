@@ -1,14 +1,14 @@
-package com.nulli.analyzer.neoloader
+package com.threeedges.analyzer.neoloader
 
-import com.nulli.analyzer.neoloader.config.LdapConfiguration
-import com.nulli.analyzer.neoloader.config.NeoConfiguration
-import com.nulli.analyzer.neoloader.config.PropertyMap
-import com.nulli.analyzer.neoloader.connector.ConnectorEntities
-import com.nulli.analyzer.neoloader.connector.ldap.LdapFacade
-import com.nulli.analyzer.neoloader.model.Person
-import com.nulli.analyzer.neoloader.model.Group
-import com.nulli.analyzer.neoloader.neo4j.NeoInstance
-import com.nulli.analyzer.neoloader.neo4j.RelationshipType
+import com.threeedges.analyzer.neoloader.config.LdapConfiguration
+import com.threeedges.analyzer.neoloader.config.NeoConfiguration
+import com.threeedges.analyzer.neoloader.config.PropertyMap
+import com.threeedges.analyzer.neoloader.connector.ConnectorEntities
+import com.threeedges.analyzer.neoloader.connector.ldap.LdapFacade
+import com.threeedges.analyzer.neoloader.model.Person
+import com.threeedges.analyzer.neoloader.model.Group
+import com.threeedges.analyzer.neoloader.neo4j.NeoInstance
+import com.threeedges.analyzer.neoloader.neo4j.RelationshipType
 import com.unboundid.ldap.sdk.LDAPException
 import com.unboundid.ldap.sdk.LDAPSearchException
 import groovy.util.logging.Log
