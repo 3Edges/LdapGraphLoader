@@ -4,8 +4,8 @@
  * A Utility that reads LDAP User Accounts and Group hierarchies directly from a given LDAP Directory
  * and creates corresponding nodes and relationships in a Neo4J Graph Database.
  *
- * Nulli Secundus Inc - March 2015
- * Created by ababeanu on 15-03-09.
+ * 3Edges - March 2015
+ * Created by ababeanu on 2015-03-09.
  *
  */
 

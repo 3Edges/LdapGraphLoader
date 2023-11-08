@@ -14,18 +14,18 @@
  *
  *  To run:
  *  =======
- *  groovy -cp <path/to>/GraphAnalyzer.jar:runtime/* NeoLoader.groovy
+ *  groovy -cp <path/to>/LdapGraphLoader.jar:runtime/* NeoLoader.groovy
  *  e.g.,
- *  groovy -Djava.util.logging.config.file=resources/logging.properties  -cp build/libs/GraphAnalyzer-0.0.1-SNAPSHOT.jar:runtime/* NeoLoader.groovy
+ *  groovy -Djava.util.logging.config.file=resources/logging.properties  -cp build/libs/LdapGraphLoader-0.0.1-SNAPSHOT.jar:runtime/* NeoLoader.groovy
  *
  * 3Edges - March 2015
  * Created by ababeanu on 2015-03-10.
  */
 
 
-import com.nulli.analyzer.neoloader.LoaderProcessor
-import com.nulli.analyzer.neoloader.config.LdapConfiguration;
-import com.nulli.analyzer.neoloader.config.NeoConfiguration;
+import com.threeedges.analyzer.neoloader.LoaderProcessor
+import com.threeedges.analyzer.neoloader.config.LdapConfiguration;
+import com.threeedges.analyzer.neoloader.config.NeoConfiguration;
 
 // Command Line Builder
 def cli = new CliBuilder(usage:'NeoLoader.groovy [-l <ldap Config File>] [-n <neo4j config file>] [-h]', width:80 );

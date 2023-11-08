@@ -1,6 +1,6 @@
-package com.nulli.analyzer.neoloader.connector
+package com.threeedges.analyzer.neoloader.connector
 
-import com.nulli.analyzer.neoloader.model.Entity
+import com.threeedges.analyzer.neoloader.model.Entity
 /**
  * Interfaces with source systems or components. Contains source data to copy to Neo4J
  *

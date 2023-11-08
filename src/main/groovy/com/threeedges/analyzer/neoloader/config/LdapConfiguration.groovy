@@ -1,4 +1,4 @@
-package com.nulli.analyzer.neoloader.config
+package com.threeedges.analyzer.neoloader.config
 
 /**
  * Encapsulates the configuration for the source LDAP Directory. The configuration is expected to be provided

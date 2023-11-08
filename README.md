@@ -43,11 +43,11 @@ The utility is built as a *Gradle* project using the *Groovy* language. It there
 
 ### Installation
 
-1. Download the source (use the **`develop`** branch !).
+1. Download the source (use the **`dev`** branch !).
 2. Update the configuration files to match your environment (location: the `resources` subdir). See below for configuration details...
 3. From the source dir: `gradle build --refresh-dependencies` .
 4. To Run: `neoLoader.sh` - Or on Windows boxes: 
-`groovy -cp build/libs/GraphAnalyzer-0.0.1-SNAPSHOT.jar:runtime/* -Djava.util.logging.config.file=resources/logging.properties NeoLoader.groovy`
+`groovy -cp build/libs/LdapGraphLoader-0.0.1-SNAPSHOT.jar:runtime/* -Djava.util.logging.config.file=resources/logging.properties NeoLoader.groovy`
 
 ### Configuration
 

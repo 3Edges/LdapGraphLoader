@@ -1,4 +1,4 @@
-package com.nulli.analyzer.neoloader.connector
+package com.threeedges.analyzer.neoloader.connector
 
 /**
  * All the Entities supported for Connector Sources.

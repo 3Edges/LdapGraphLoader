@@ -1,7 +1,7 @@
-package com.nulli.neoloader.config
+package com.threeedges.neoloader.config
 
 import spock.lang.Specification;
-import com.nulli.analyzer.neoloader.config.LdapConfiguration;
+import com.threeedges.analyzer.neoloader.config.LdapConfiguration;
 
 /**
  * Spock tests for the LDAP Configuration

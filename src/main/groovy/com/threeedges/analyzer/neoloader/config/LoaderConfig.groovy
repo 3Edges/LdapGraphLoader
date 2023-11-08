@@ -1,4 +1,4 @@
-package com.nulli.analyzer.neoloader.config
+package com.threeedges.analyzer.neoloader.config
 
 /**
  * Represents a DataSource or Neo target configuration object, which encapsulates all data necessary to perform a connection.

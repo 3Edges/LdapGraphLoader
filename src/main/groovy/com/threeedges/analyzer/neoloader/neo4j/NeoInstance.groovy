@@ -1,14 +1,11 @@
-package com.nulli.analyzer.neoloader.neo4j
+package com.threeedges.analyzer.neoloader.neo4j
 
-import com.nulli.analyzer.neoloader.config.NeoConfiguration
-import com.nulli.analyzer.neoloader.config.PropertyMap
-import com.nulli.analyzer.neoloader.connector.ConnectorEntities
-import com.nulli.analyzer.neoloader.model.Entity
+import com.threeedges.analyzer.neoloader.config.NeoConfiguration
+import com.threeedges.analyzer.neoloader.model.Entity
 import groovy.util.logging.Log
 import groovyx.net.http.RESTClient
 import groovyx.net.http.ContentType
 import groovyx.net.http.HttpResponseDecorator
-import groovy.json.JsonSlurper
 
 /**
  *
