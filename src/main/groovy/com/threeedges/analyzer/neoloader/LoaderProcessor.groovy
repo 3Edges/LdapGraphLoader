@@ -63,7 +63,7 @@ class LoaderProcessor {
         processGroups()
 
         // DEBUG
-        /* *
+        /* */
         EntityDN2ID.each { k,v ->
             log.fine "Key= ${k}, V=${v}"
         }
@@ -79,10 +79,10 @@ class LoaderProcessor {
         // Timer
         def after = System.currentTimeMillis()
         def delta = after - before
+        def deltaSecs = delta/1000
+        def deltaMin = deltaSecs/60
 
-        System.out.println "Processing time: ${delta} ms = ${delta/1000} s = ${delta/60} m."
-        log.info "Processing time: ${delta} ms = ${delta/1000} s = ${delta/60} m."
-
+        log.info "Processing time: ${delta} ms = ${deltaSecs} s = ${deltaMin} m."
     }
 
     /**
@@ -104,9 +104,9 @@ class LoaderProcessor {
                 log.fine "processGroupRels - Member = ${m}."
 
                 // Get the Neo4J IDs of the corresponding nodes
-                def String memberID = EntityDN2ID.get(m.toLowerCase())
+                def Integer memberID = EntityDN2ID.get(m.toLowerCase())
                 log.fine "processGroupRels - Member ID = ${memberID}."
-                def String groupID = EntityDN2ID.get(gDN.toLowerCase())
+                def Integer groupID = EntityDN2ID.get(gDN.toLowerCase())
                 log.fine "processGroupRels - Group ID = ${groupID}."
 
                 // Create relationship if both nodes are found
@@ -186,18 +186,18 @@ class LoaderProcessor {
             log.fine "processUsers -- New Node ID = ${newNodeID}."
 
             // Handle result: store new node id
-            if ((newNodeID) && (newNodeID != "")) {
+            if ((newNodeID) && (newNodeID >= 0)) {
                 // New Node
                 log.fine "processUsers - Sucessfully created Neo Node ${newNodeID} for user ${dn}"
                 EntityDN2ID.put(dn.toLowerCase(),newNodeID)
             } else {
                 log.severe "processUsers - Failed to create Neo Node for user ${dn} !"
-                System.out.println("processUsers - Failed to create Neo Node for user: " + dn)
+                // System.out.println("processUsers - Failed to create Neo Node for user: " + dn)
             }
         }
 
         log.info "processUsers - User processing complete. Processed ${String.valueOf(users.size())} Users."
-        System.out.println ("processUsers - User processing complete. Processed Users." + String.valueOf(users.size()))
+        // System.out.println ("processUsers - User processing complete. Processed Users." + String.valueOf(users.size()))
 
     }
 
@@ -228,7 +228,7 @@ class LoaderProcessor {
             def newNodeID = neoServer.createNode(g)
             log.fine "processGroups -- New Node ID = ${newNodeID}."
             // Handle result: store new node id
-            if ((newNodeID) && (newNodeID != "")) {
+            if ((newNodeID) && (newNodeID >= 0)) {
                 log.fine "processGroups - Sucessfully created Neo Node for group ${dn}"
                 EntityDN2ID.put(dn.toLowerCase(),newNodeID)
             } else {
@@ -238,7 +238,7 @@ class LoaderProcessor {
         }
 
         log.info "processGroups - User processing complete. Processed ${String.valueOf(groups.size())} groups."
-        System.out.println ("processGroups - User processing complete. Processed Groups." + String.valueOf(groups.size()))
+        // System.out.println ("processGroups - User processing complete. Processed Groups." + String.valueOf(groups.size()))
 
     }
 

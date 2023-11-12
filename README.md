@@ -45,8 +45,10 @@ The utility is built as a *Gradle* project using the *Groovy* language. It there
 
 1. Download the source (use the **`dev`** branch !).
 2. Update the configuration files to match your environment (location: the `resources` subdir). See below for configuration details...
-3. From the source dir: `gradle build --refresh-dependencies` .
-4. To Run: `neoLoader.sh` - Or on Windows boxes: 
+3. _OPTIONAL_: if you need to clear your **Gradle** cache, run: `rm -rf ~/.gradle/caches`.
+4. From the source dir: `gradle build --refresh-dependencies` .
+5. Run `gradle getDeps` to pull all  JAR dependencies into the local `/runtime` folder.
+6. To Run: `neoLoader.sh` - Or on Windows boxes: 
 `groovy -cp build/libs/LdapGraphLoader-0.0.1-SNAPSHOT.jar:runtime/* -Djava.util.logging.config.file=resources/logging.properties NeoLoader.groovy`
 
 ### Configuration
@@ -58,7 +60,7 @@ The Graph Loader uses the following config files...
 Gathers all the connectivity and metadata of the source LDAP Directory. In particular:
 
 * `host` : LDAP Server Host
-* `port` : LDAP Server Port
+* `port` : LDAP Server Port. Use the LDAPS port.
 * `binddn` : LDAP Admin User DN
 * `password` : LDAP User password
 * `userBasedn` : The DN of the container under which the User Accounts are stored. The Loader will _NOT_ create a node for this container (on flat DIT, it may contain millions of user accounts, which would imply too many relationships in the graph for a single node).

@@ -16,9 +16,9 @@ class NeoConfiguration implements LoaderConfig{
     private String Database;
     private String User;
     private String Password;
-    private String authorization;
     private String idLabel;
     private String groupLabel;
+    private String neoScheme;
 
     // CONSTANTS
     private static final String DEFAULT_CFG_FILE_NAME = "resources/neoServer.properties";
@@ -27,9 +27,9 @@ class NeoConfiguration implements LoaderConfig{
     private final String DATABASE_PROP = "database";
     private final String USER_PROP = "user";
     private final String PWD_PROP = "password";
-    private final String AUTHORIZATION = "authorization";
     private final String ID_LABEL = "identityLabel";
     private final String GROUP_LABEL = "groupLabel";
+    private final String NEO_SCHEME = "neoScheme";
 
     /**
      * Creates an LDAP Configuration that uses the default properties file name ("ldapServer.properties"),
@@ -75,12 +75,12 @@ class NeoConfiguration implements LoaderConfig{
         return Password
     }
 
-    String getAuthorization() {
-        return authorization
-    }
-
     String getDatabase() {
         return Database
+    }
+
+    String getNeoScheme() {
+        return neoScheme
     }
 
 
@@ -90,14 +90,14 @@ class NeoConfiguration implements LoaderConfig{
      * @param FName A ConfigSlurper ConfigObject, encapsulating the LDAP Properties to Load.
      */
      void loadCfg (ConfigObject cfg) {
-        this.Host = cfg.getProperty(HOST_PROP);
-        this.NeoPort = cfg.getProperty(PORT_PROP);
-        this.Database = cfg.getProperty(DATABASE_PROP);
-        this.User = cfg.getProperty(USER_PROP);
-        this.Password = cfg.getProperty(PWD_PROP);
-        this.authorization = cfg.getProperty(AUTHORIZATION);
-        this.idLabel = cfg.getProperty(ID_LABEL);
-        this.groupLabel = cfg.getProperty(GROUP_LABEL);
+         this.Host = cfg.getProperty(HOST_PROP);
+         this.NeoPort = cfg.getProperty(PORT_PROP);
+         this.Database = cfg.getProperty(DATABASE_PROP);
+         this.User = cfg.getProperty(USER_PROP);
+         this.Password = cfg.getProperty(PWD_PROP);
+         this.idLabel = cfg.getProperty(ID_LABEL);
+         this.groupLabel = cfg.getProperty(GROUP_LABEL);
+         this.neoScheme = cfg.getProperty(NEO_SCHEME)
     }
 }
 

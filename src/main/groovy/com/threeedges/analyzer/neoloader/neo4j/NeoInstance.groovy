@@ -3,9 +3,8 @@ package com.threeedges.analyzer.neoloader.neo4j
 import com.threeedges.analyzer.neoloader.config.NeoConfiguration
 import com.threeedges.analyzer.neoloader.model.Entity
 import groovy.util.logging.Log
-import groovyx.net.http.RESTClient
-import groovyx.net.http.ContentType
-import groovyx.net.http.HttpResponseDecorator
+// Neo4J
+import org.neo4j.driver.*;
 
 /**
  *
@@ -20,8 +19,10 @@ import groovyx.net.http.HttpResponseDecorator
 class NeoInstance {
 
     private NeoConfiguration config
-    private String restBaseURL
+    private String neoURI
     private Map mappings
+    private Driver dbDriver;
+    private SessionConfig sessionConfig;
 
     /**
      * Constructor.
@@ -32,8 +33,16 @@ class NeoInstance {
      */
     NeoInstance (NeoConfiguration cfg, Map attrMap) {
         this.config = cfg
-        this.restBaseURL = "http://${cfg.getHost()}:${cfg.getNeoPort()}/db/${cfg.getDatabase()}"
+        //old: this.neoURI = "neo4j+s://${cfg.getHost()}}/db/${cfg.getDatabase()}"
+        this.neoURI = "${cfg.getNeoScheme()}://${cfg.getHost()}:${cfg.getNeoPort()}"
+        this.dbDriver = GraphDatabase.driver(neoURI, AuthTokens.basic(config.getUser(), config.getPassword()));
         this.mappings = attrMap
+        // Set Driver database config
+        var builder = SessionConfig.builder();
+        if (config.getDatabase() != null && !config.getDatabase().isBlank()) {
+            builder.withDatabase(config.getDatabase());
+        }
+        this.sessionConfig = builder.build();
     }
 
     /**
@@ -44,35 +53,38 @@ class NeoInstance {
      * already.
      *
      * @param entity A NeoLoader Entity:  instance of an LDAP Entity
-     * @return A String: the ID of the newly created node, or "" if the creation failed
+     * @return An integer: the ID of the newly created node, or -1 if the creation failed
      */
-    String createNode (Entity entity) {
+    Integer createNode (Entity entity) {
 
-        def id = ""
+        // DEBUG:
+        //log.info("\nUsing Neo4J database: ${this.neoURI}/${config.getDatabase()}\n")
 
+        // Merge Cypher query:
+        def id = 0
         log.fine "------------ createNode - Entering. "
-
-        def crCypher = '"MERGE (n:' + entity.getEntityType() + ' ' + buildJsonProps(entity) + ') RETURN id(n)"'
+        String crCypher = 'CREATE (n:' + entity.getEntityType() + ' ' + buildJsonProps(entity) + ') RETURN id(n)'
         log.fine "createNode - Cypher statement = ${crCypher}"
 
-        // Create Node through REST
-        def client = new RESTClient( restBaseURL  )
-        client.auth.basic config.getUser(), config.getPassword()
-        def resp = (HttpResponseDecorator) client.post(
-                path : '/transaction/commit',
-                requestContentType : ContentType.JSON,
-                headers: ["Accept": "application/json; charset=UTF-8","Authorization": config.getAuthorization()],
-                body : '{"statements" : [ { "statement": ' + crCypher + '} ]}'
-        )
-
-        if (resp.getStatus() < 400) {
-            id = extractNodeID((String) resp.getData())
-            log.fine ("createNode - New node ${id} succesfully created.")
-        } else {
-            log.severe ("createNode - New node creation failure : " + String.valueOf(resp.status))
-            System.out.println ("createNode - New node creation failure : " + String.valueOf(resp.status))
+        // Create Node through BOLT
+        try (Session session = dbDriver.session(sessionConfig))
+        {
+            // Wrapping a Cypher Query in a Managed Transaction for writes to handle connection
+            // problems and transient errors using an automatic retry mechanism.
+            id = session.executeWrite(tx -> {
+                var query = new Query(crCypher)
+                var result = tx.run(query)
+                /* DEBUG - log results : *
+                result.list().getFirst().asMap().forEach {k, v -> log.info "${k}:${v}"}
+                /* */
+                return result.single().get(0).asInt()
+            });
+        } catch (Exception e ) {
+            log.severe ("createNode - New node creation failure, Cause: " + e.toString())
+            return -1
+        } finally {
         }
-
+        log.info ("createNode - New node ${id} succesfully created.")
         log.fine "------------ createNode - Exiting. "
 
         return id
@@ -88,43 +100,34 @@ class NeoInstance {
      * @param props A Map of Key=Value properties to assign to the new relationship
      * @return
      */
-    boolean createRelationship (String Id1, String Id2, String RelType, Map props) {
+    boolean createRelationship (Integer Id1, Integer Id2, String RelType, Map props) {
 
         log.fine "------------ createRelationship : ${Id1} -> ${Id2} : Entering..."
 
-        // Inits
-        boolean success = false
-        // Target Node URL
-        def target = restBaseURL + '/node/' + Id2
-        // REST request Body:
-        def body = '{"to" : "' + target + '",' + ' "type" : ' + '"' + RelType + '"'
-        if ((props) && (props.size() > 0)) {
-            // If rel. properties are supplied, add them to the body
-            body += ', ' + buildRelJsonProps(props)
+        // Create Rel cypher:
+        String crCypher = "MATCH (source) where ID(source)=${Id1} MATCH (target) WHERE ID(target)=${Id2} " +
+                "CREATE (source)-[r:${RelType} ${buildRelJsonProps(props)}]->(target) return id(r)"
+
+        log.fine "createNode - Cypher statement = ${crCypher}"
+
+        // Create Node through BOLT
+        def id = 0
+        try (Session session = dbDriver.session(sessionConfig))
+        {
+            // Wrapping a Cypher Query in a Managed Transaction for writes to handle connection
+            // problems and transient errors using an automatic retry mechanism.
+            id = session.executeWrite(tx -> {
+                var query = new Query(crCypher)
+                var result = tx.run(query)
+                return result.single().get(0).asInt()
+            })
+        } catch (Exception e ) {
+            log.severe ("createRelationship - New rel creation failure, Cause : " + e.toString())
+            return false
         }
-        body += ' }'
-
-        // Create Relationship through REST
-        def client = new RESTClient( restBaseURL  )
-        client.auth.basic config.getUser(), config.getPassword()
-        def resp = (HttpResponseDecorator) client.post(
-                path : '/node/' + Id1 + '/relationships',
-                requestContentType : ContentType.JSON,
-                headers: ["Accept": "application/json; charset=UTF-8","Authorization": config.getAuthorization()],
-                body : body
-        )
-
-        if (resp.getStatus() < 400) {
-            log.fine ("createRelationship - New relationship succesfully created.")
-            success = true
-        } else {
-            log.severe ("createRelationship - New Rel. creation failure : " + String.valueOf(resp.status))
-            System.out.println ("createRelationship - New Rel. creation failure : " + String.valueOf(resp.status))
-        }
-
+        log.info ("createRelationship - New relationship ${id} succesfully created.")
         log.fine "------------ createRelationship - Exiting. "
-
-        return success;
+        return true;
     }
 
     /**
@@ -138,9 +141,13 @@ class NeoInstance {
 
         log.fine "BuildJsonProps - Entering. "
 
+        // Generate random UUID
+        def nodeID = UUID.randomUUID().toString()
+
         // Initializations
-        def jsonProps = "{ "
+        def jsonProps = "{ ID: '${nodeID}',"
         def attributes = ent.getAttributes()
+
         /* DEBUG: *
         for (String k: attributes.keySet()) {
             log.info "BuildJsonProps - Attrib key: ${k}, val = ${attributes.get(k)}"
@@ -159,7 +166,7 @@ class NeoInstance {
         attributes.each {name, value ->
             cnt++
             def String val = value[0]
-            // Use the Mapped propertty names in Neo4J:
+            // Use the Mapped property names in Neo4J:
             jsonProps += (name == "dn") ? entMappings.get(name) + ":'" + value + "'" : entMappings.get(name) + ":'" + val.replaceAll(/\'/, ' ') + "'"
             if (cnt < nbAttrs)
                 jsonProps += ","
@@ -193,10 +200,10 @@ class NeoInstance {
         if (nbProps > 0) {
             // There are properties to process
             def cnt = 0
-            jsonRelProps += '"data" : { '
+            jsonRelProps += '{ '
             props.each { name, value ->
                 cnt++
-                jsonRelProps += '"' + name + '" : "' + value + '"'
+                jsonRelProps += name + ' : "' + value + '"'
                 if (cnt < nbProps)
                     jsonRelProps += ","
             }
