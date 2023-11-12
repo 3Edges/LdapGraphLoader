@@ -51,6 +51,9 @@ crashlytics-build.properties
 .gradle
 build
 runtime
-data/nulli_groups.ldif.log
-data/nulli_sample.ldif.log
 libs/
+build-cache
+/.neoLoader.sh.swp
+NeoLoader.log
+data/user_sample.ldif.log
+data/group_sample.ldif.log

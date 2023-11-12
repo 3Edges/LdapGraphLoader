@@ -26,6 +26,7 @@
 import com.threeedges.analyzer.neoloader.LoaderProcessor
 import com.threeedges.analyzer.neoloader.config.LdapConfiguration;
 import com.threeedges.analyzer.neoloader.config.NeoConfiguration;
+import groovy.cli.commons.*;
 
 // Command Line Builder
 def cli = new CliBuilder(usage:'NeoLoader.groovy [-l <ldap Config File>] [-n <neo4j config file>] [-h]', width:80 );

@@ -16,21 +16,22 @@ version = "1.0"
 apply plugin: "groovy"
 apply plugin: "java"
 
-// Build GraphAnalyzer.jar
+// Build LdapGraphLoader.jar
 jar {
     manifest {
-        attributes "Implementation-Title": "Graph Analyzer",
+        attributes "Implementation-Title": "Ldap Graph Loader",
                    "Implementation-Version": version
     }
 }
 
 // Dependencies versions
 def groovyVersion = "4.0.14"
-def neo4jVersion = "4.4.4"
-def unboundIDVersion = "3.0.0" //"2.3.8"
+def neo4jVersion = "5.7.0"
+def unboundIDVersion = "6.0.10" //"2.3.8"
 def commonsCliVersion = "1.1"
 def ivyVersion = "2.5.2"
 def httpBuilderVersion = "0.7.1"
+def neo4jDriverVersion = "5.14.0"
 
 repositories {
     mavenCentral()
@@ -49,15 +50,22 @@ dependencies {
 
     // implementation
     // Groovy libs
-    implementation "org.apache.groovy:groovy-all:${groovyVersion}"
+    implementation "org.apache.groovy:groovy:${groovyVersion}"
+    implementation "org.apache.groovy:groovy-json:${groovyVersion}"
+    implementation 'info.picocli:picocli:4.7.5'
+
     // UnboundID LDAP SDK
     implementation "com.unboundid:unboundid-ldapsdk:${unboundIDVersion}"
     // Neo4J Java SDK
     implementation "org.neo4j:neo4j:${neo4jVersion}"
     // Command Line Builder
     implementation "commons-cli:commons-cli:${commonsCliVersion}"
+
     // REST HTTP Client
     implementation "org.codehaus.groovy.modules.http-builder:http-builder:${httpBuilderVersion}"
+
+    // Neo4J Driver
+    implementation "org.neo4j.driver:neo4j-java-driver:${neo4jDriverVersion}"
 
     // TEST
     testImplementation group: "junit", name: "junit", version: "4.13.2"
