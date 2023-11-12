@@ -16,7 +16,6 @@ class NeoConfiguration implements LoaderConfig{
     private String Database;
     private String User;
     private String Password;
-    private String authorization;
     private String idLabel;
     private String groupLabel;
     private String neoScheme;
@@ -28,7 +27,6 @@ class NeoConfiguration implements LoaderConfig{
     private final String DATABASE_PROP = "database";
     private final String USER_PROP = "user";
     private final String PWD_PROP = "password";
-    private final String AUTHORIZATION = "authorization";
     private final String ID_LABEL = "identityLabel";
     private final String GROUP_LABEL = "groupLabel";
     private final String NEO_SCHEME = "neoScheme";
@@ -77,10 +75,6 @@ class NeoConfiguration implements LoaderConfig{
         return Password
     }
 
-    String getAuthorization() {
-        return authorization
-    }
-
     String getDatabase() {
         return Database
     }
@@ -101,7 +95,6 @@ class NeoConfiguration implements LoaderConfig{
          this.Database = cfg.getProperty(DATABASE_PROP);
          this.User = cfg.getProperty(USER_PROP);
          this.Password = cfg.getProperty(PWD_PROP);
-         this.authorization = cfg.getProperty(AUTHORIZATION);
          this.idLabel = cfg.getProperty(ID_LABEL);
          this.groupLabel = cfg.getProperty(GROUP_LABEL);
          this.neoScheme = cfg.getProperty(NEO_SCHEME)
